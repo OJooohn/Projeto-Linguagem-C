@@ -54,9 +54,7 @@ void novoCadastro(int n, Pessoa *p){
     if(n > 1){
       for(int i = 0; i < n; i++){
         if(p[i].id_pessoa == p[i - 1].id_pessoa){
-          printf("Id de pessoa ja cadastrada!\n");
           val = 1;
-          system("pause");
         }
       }
     } else {
@@ -69,6 +67,8 @@ void novoCadastro(int n, Pessoa *p){
     if(val >= 1){
       valID = 1;
     } else {
+      printf("Id de pessoa ja cadastrada!\n");
+      system("pause");
       valID = 0;
     }
   }
