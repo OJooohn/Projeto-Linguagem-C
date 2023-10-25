@@ -77,11 +77,6 @@ int verificadorCPF(char *cCPF){
   
 }
 
-int numVerificador(){
-
-}
-
-
 void printMenu(){
   printf("**************************************************\n");
   printf("*                                                *\n");
