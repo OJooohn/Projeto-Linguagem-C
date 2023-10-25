@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 typedef struct{
   int id_pessoa;
@@ -12,9 +13,73 @@ typedef struct{
   char setor[30];
 } Pessoa;
 
-/*int verificadorCPF(){
+int verificadorCPF(char *cCPF){
+  int i, j, *CPF;
+  CPF = (int*) malloc(11 * sizeof(int));
+  
+  for(i = 0, j = 0; i < strlen(cCPF); i++){
+    if(cCPF[i] >= 48 && cCPF[i] <= 57){
+      CPF[j] = cCPF[i] - 48;
+      j++;
+    }
+  }
 
-}*/
+  bool iguais = false;
+
+  for(i = 1; i < 11; i++){
+    if(CPF[i] != CPF[0]){
+      iguais = true;
+    }
+  }
+
+  if(iguais == false){
+    printf("CPF invalido (digitos iguais)\n");
+    system("pause");
+    return 2;
+  }
+
+  int soma = 0, num1, num2;
+  for(i = 0; i < 9; i++){
+    soma += CPF[i] * (10 - i);
+  }
+
+  if(11 - (soma % 11) > 9){
+    num1 = 0;
+  } else {
+    num1 = 11 - soma % 11;
+  }
+
+  if(CPF[9] != num1){
+    printf("CPF invalido!\n");
+    system("pause");
+    return 2;
+  }
+
+  soma = 0;
+  for(i = 0; i < 10; i++){
+    soma += CPF[i] * (11 - i);
+  }
+
+  if(11 - (soma % 11) > 9){
+    num1 = 0;
+  } else {
+    num1 = 11 - (soma % 11);
+  }
+
+  if(CPF[10] != num1){
+    printf("CPF invalido!\n");
+    system("pause");
+    return 2;
+  }
+
+  free(CPF);
+  return 1;
+  
+}
+
+int numVerificador(){
+
+}
 
 
 void printMenu(){
@@ -85,6 +150,19 @@ void novoCadastro(int n, Pessoa *p){
   scanf(" %[^\n]", &p[n].funcao);
   printf("Digite o setor: ");
   scanf(" %[^\n]", &p[n].setor);
+
+  int valCPF = verificadorCPF(&p[n].CPF);
+
+  while(valCPF == 2){
+    printf("Digite seu CPF: ");
+    scanf(" %[^\n]", &p[n].CPF);
+    valCPF = verificadorCPF(&p[n].CPF);
+    if(valCPF == 1){
+      valCPF = 1;
+    } else {
+      valCPF = 2;
+    }
+  }
   
 }
 
