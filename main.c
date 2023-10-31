@@ -187,46 +187,32 @@ void cadastroInformacao(Pessoa *p, int n){
 int lerArquivo(FILE *arquivo, Pessoa *p) {
 
   int n = 0;
-  char caracter;
+
   arquivo = fopen("funcionarios.txt", "r");
 
   if(arquivo == NULL){
     printf("Erro ao abrir arquivo\n");
-    return 404;
+    system("exit");
   }
 
-  rewind(arquivo);
 
-  while(! feof(arquivo)){
+  while(fgetc(arquivo) != EOF){
+
+    fseek(arquivo, -1, SEEK_CUR);
     
     p = (Pessoa*) realloc(p, ++n * sizeof(Pessoa));
     fscanf(arquivo, "id: %d\n", &p[n - 1].id_pessoa);
-    fscanf(arquivo, "nome: %s\n", &p[n - 1].nome);
-    fscanf(arquivo, "CPF: %s\n", &p[n - 1].CPF);
-    fscanf(arquivo, "email: %s\n", &p[n - 1].email);
-    fscanf(arquivo, "telefone: %s\n", &p[n - 1].telefone);
-    fscanf(arquivo, "funcao: %s\n", &p[n - 1].funcao);
-    fscanf(arquivo, "setor: %s\n", &p[n - 1].setor);
+    fscanf(arquivo, "nome: %[^\n]\n", &p[n - 1].nome);
+    fscanf(arquivo, "CPF: %[^\n]\n", &p[n - 1].CPF);
+    fscanf(arquivo, "email: %[^\n]\n", &p[n - 1].email);
+    fscanf(arquivo, "telefone: %[^\n]\n", &p[n - 1].telefone);
+    fscanf(arquivo, "funcao: %[^\n]\n", &p[n - 1].funcao);
+    fscanf(arquivo, "setor: %[^\n]\n", &p[n - 1].setor);
   }
 
-  printf("n_pessoa: [%d]\n", n);
-  system("pause");
+  fclose(arquivo);
 
-  if(fclose(arquivo) == 0){
-    for(int i = 0; i < n; i++){
-      printf("id: %d\n", p[i].id_pessoa);
-      printf("nome: %s\n", p[i].nome);
-      printf("CPF: %s\n", p[i].CPF);
-      printf("email: %s\n", p[i].email);
-      printf("telefone: %s\n", p[i].telefone);
-      printf("funcao: %s\n", p[i].funcao);
-      printf("setor: %s\n\n", p[i].setor);
-    }
-
-    system("pause");
-
-  }
-
+  return n;
 
 }
 
@@ -237,7 +223,6 @@ int main() {
   Pessoa *pessoa;
   pessoa = (Pessoa*) malloc(0 * sizeof(Pessoa));
 
-  lerArquivo(arquivo, pessoa);
   
   if(pessoa == NULL){
     printf("Erro de alocacao de memoria!\n");
@@ -245,6 +230,19 @@ int main() {
   }
 
   int menu = 1, n_pessoa = 0;
+  n_pessoa = lerArquivo(arquivo, pessoa);
+
+  
+  printf("ID: %d\n", pessoa[0].id_pessoa);
+  printf("nome: %s\n", pessoa[0].nome);
+  printf("CPF: %s\n", pessoa[0].CPF);
+  printf("E-mail: %s\n", pessoa[0].email);
+  printf("Telefone: %s\n", pessoa[0].telefone);
+  printf("Funcao: %s\n", pessoa[0].funcao);
+  printf("Setor: %s\n\n", pessoa[0].setor);
+  
+
+  system("pause");
 
   while (menu != 0){
     system("cls");
