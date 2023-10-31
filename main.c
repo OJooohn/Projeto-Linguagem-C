@@ -197,32 +197,36 @@ int lerArquivo(FILE *arquivo, Pessoa *p) {
 
   rewind(arquivo);
 
-  while((caracter = fgetc(arquivo)) != EOF){
+  while(! feof(arquivo)){
+    
     p = (Pessoa*) realloc(p, ++n * sizeof(Pessoa));
     fscanf(arquivo, "id: %d\n", &p[n - 1].id_pessoa);
-    fscanf(arquivo, "nome: %[^\n]\n", &p[n - 1].nome);
+    fscanf(arquivo, "nome: %s\n", &p[n - 1].nome);
     fscanf(arquivo, "CPF: %s\n", &p[n - 1].CPF);
     fscanf(arquivo, "email: %s\n", &p[n - 1].email);
-    fscanf(arquivo, "telefone: %[^\n]\n", &p[n - 1].telefone);
-    fscanf(arquivo, "funcao: %[^\n]\n", &p[n - 1].funcao);
-    fscanf(arquivo, "setor: %[^\n]\n", &p[n - 1].setor);
-    fseek(arquivo, 1, SEEK_CUR);
+    fscanf(arquivo, "telefone: %s\n", &p[n - 1].telefone);
+    fscanf(arquivo, "funcao: %s\n", &p[n - 1].funcao);
+    fscanf(arquivo, "setor: %s\n", &p[n - 1].setor);
   }
 
   printf("n_pessoa: [%d]\n", n);
   system("pause");
 
-  for(int i = 0; i < n; i++){
-    printf("id: %d\n", p[i].id_pessoa);
-    printf("nome: %s\n", p[i].nome);
-    printf("CPF: %s\n", p[i].CPF);
-    printf("email: %s\n", p[i].email);
-    printf("telefone: %s\n", p[i].telefone);
-    printf("funcao: %s\n", p[i].funcao);
-    printf("setor: %s\n\n", p[i].setor);
+  if(fclose(arquivo) == 0){
+    for(int i = 0; i < n; i++){
+      printf("id: %d\n", p[i].id_pessoa);
+      printf("nome: %s\n", p[i].nome);
+      printf("CPF: %s\n", p[i].CPF);
+      printf("email: %s\n", p[i].email);
+      printf("telefone: %s\n", p[i].telefone);
+      printf("funcao: %s\n", p[i].funcao);
+      printf("setor: %s\n\n", p[i].setor);
+    }
+
+    system("pause");
+
   }
 
-  system("pause");
 
 }
 
