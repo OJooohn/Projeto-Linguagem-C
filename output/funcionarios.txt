@@ -1,0 +1,23 @@
+id: 31
+nome: John Chappell
+CPF: 111.710.669-10
+email: john@gmail.com
+telefone: 41 9914949-38
+funcao: programador
+setor: front-end
+
+id: 16
+nome: Dayane
+CPF: 977.557.459-53
+email: day@gmail.com
+telefone: 41 90990-5647
+funcao: programadora
+setor: back-end
+
+id: 23
+nome: Eduardo
+CPF: 197.132.430-21
+email: edu@gmail.com
+telefone: 41 92387-3349
+funcao: professor
+setor: ciencia da computacao
