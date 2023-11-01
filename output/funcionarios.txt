@@ -2,7 +2,7 @@ id: 31
 nome: John Chappell
 CPF: 111.710.669-10
 email: john@gmail.com
-telefone: 9914949-38
+telefone: 41 9914949-38
 funcao: programador
 setor: front-end
 
@@ -21,3 +21,19 @@ email: edu@gmail.com
 telefone: 92387-3349
 funcao: professor
 setor: ciencia da computacao
+
+id: 33
+nome: Thyago de Melo
+CPF: 630.955.460-33
+email: thyagodemelo33@gmail.com
+telefone: 41 93033-0330
+funcao: mecanico
+setor: manutencao
+
+id: 22
+nome: Thiago Gallotti
+CPF: 873.385.020-80
+email: thiagogallotti@gmail.com
+telefone: 41 94367-2376
+funcao: contabilidade
+setor: financeiro

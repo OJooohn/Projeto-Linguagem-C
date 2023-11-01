@@ -38,18 +38,18 @@ int verificadorCPF(char *cCPF){
     return 2;
   }
 
-  int soma = 0, num1, num2;
+  int soma = 0, num;
   for(i = 0; i < 9; i++){
     soma += CPF[i] * (10 - i);
   }
 
   if(11 - (soma % 11) > 9){
-    num1 = 0;
+    num = 0;
   } else {
-    num1 = 11 - soma % 11;
+    num = 11 - soma % 11;
   }
 
-  if(CPF[9] != num1){
+  if(CPF[9] != num){
     printf("CPF invalido!\n");
     system("pause");
     return 2;
@@ -61,12 +61,12 @@ int verificadorCPF(char *cCPF){
   }
 
   if(11 - (soma % 11) > 9){
-    num1 = 0;
+    num = 0;
   } else {
-    num1 = 11 - (soma % 11);
+    num = 11 - (soma % 11);
   }
 
-  if(CPF[10] != num1){
+  if(CPF[10] != num){
     printf("CPF invalido!\n");
     system("pause");
     return 2;
@@ -96,7 +96,7 @@ void printMenu(){
   printf("Digite a opcao: ");
 }
 
-void novoCadastro(int n, Pessoa *p){
+void novoCadastro(int n, Pessoa *p, FILE *arquivo){
 
   int valID = 0, val = 0;
 
@@ -162,6 +162,28 @@ void novoCadastro(int n, Pessoa *p){
       valCPF = 2;
     }
   }
+
+  arquivo = fopen("funcionarios.txt", "r+");
+
+  if(arquivo == NULL){
+    printf("Erro ao abrir arquivo\n");
+    system("exit");
+  }
+
+  fseek(arquivo, 0, SEEK_END);
+
+  fprintf(arquivo, "\nid: %d\n", p[n].id_pessoa);
+  fprintf(arquivo, "nome: %s\n", p[n].nome);
+  fprintf(arquivo, "CPF: %s\n", p[n].CPF);
+  fprintf(arquivo, "email: %s\n", p[n].email);
+  fprintf(arquivo, "telefone: %s\n", p[n].telefone);
+  fprintf(arquivo, "funcao: %s\n", p[n].funcao);
+  fprintf(arquivo, "setor: %s\n", p[n].setor);
+
+  if(fclose(arquivo) != 0) {
+    printf("Erro ao fechar arquivo\n");
+    system("exit");
+  }
   
 }
 
@@ -224,11 +246,9 @@ int main() {
     fscanf(arquivo, "setor: %[^\n]\n", &pessoa[n_pessoa - 1].setor);
   }
 
-  if(fclose(arquivo) == 0) {
-    
-  } else {
+  if(fclose(arquivo) != 0) {
     printf("Erro ao fechar arquivo\n");
-    system("pause");
+    system("exit");
   }
 
   for(int i = 0; i < n_pessoa; i++){
@@ -257,7 +277,7 @@ int main() {
     switch (menu){
       case 1:
       pessoa = (Pessoa*) realloc(pessoa, ++n_pessoa * sizeof(Pessoa));
-      novoCadastro(n_pessoa - 1, pessoa);
+      novoCadastro(n_pessoa - 1, pessoa, arquivo);
       break;
       
       /*case 2: excluirCadastro();
