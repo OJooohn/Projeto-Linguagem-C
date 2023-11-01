@@ -113,15 +113,19 @@ void novoCadastro(int n, Pessoa *p){
 
     if(n > 1){
       for(int i = 0; i < n; i++){
-        if(p[i].id_pessoa == p[i - 1].id_pessoa){
+        if(p[n].id_pessoa == p[i].id_pessoa){
+          val = 0;
+          break;
+        } else {
           val = 1;
         }
       }
     } else {
       if(p[0].id_pessoa == p[1].id_pessoa)
         val = 0;
-      else
+      else 
         val = 1;
+        
     }
 
     if(val >= 1){
@@ -184,38 +188,6 @@ void cadastroInformacao(Pessoa *p, int n){
 
 }
 
-int lerArquivo(FILE *arquivo, Pessoa *p) {
-
-  int n = 0;
-
-  arquivo = fopen("funcionarios.txt", "r");
-
-  if(arquivo == NULL){
-    printf("Erro ao abrir arquivo\n");
-    system("exit");
-  }
-
-
-  while(fgetc(arquivo) != EOF){
-
-    fseek(arquivo, -1, SEEK_CUR);
-    
-    p = (Pessoa*) realloc(p, ++n * sizeof(Pessoa));
-    fscanf(arquivo, "id: %d\n", &p[n - 1].id_pessoa);
-    fscanf(arquivo, "nome: %[^\n]\n", &p[n - 1].nome);
-    fscanf(arquivo, "CPF: %[^\n]\n", &p[n - 1].CPF);
-    fscanf(arquivo, "email: %[^\n]\n", &p[n - 1].email);
-    fscanf(arquivo, "telefone: %[^\n]\n", &p[n - 1].telefone);
-    fscanf(arquivo, "funcao: %[^\n]\n", &p[n - 1].funcao);
-    fscanf(arquivo, "setor: %[^\n]\n", &p[n - 1].setor);
-  }
-
-  fclose(arquivo);
-
-  return n;
-
-}
-
 int main() {
 
   FILE *arquivo;
@@ -230,18 +202,45 @@ int main() {
   }
 
   int menu = 1, n_pessoa = 0;
-  n_pessoa = lerArquivo(arquivo, pessoa);
 
-  
-  printf("ID: %d\n", pessoa[0].id_pessoa);
-  printf("nome: %s\n", pessoa[0].nome);
-  printf("CPF: %s\n", pessoa[0].CPF);
-  printf("E-mail: %s\n", pessoa[0].email);
-  printf("Telefone: %s\n", pessoa[0].telefone);
-  printf("Funcao: %s\n", pessoa[0].funcao);
-  printf("Setor: %s\n\n", pessoa[0].setor);
-  
+  arquivo = fopen("funcionarios.txt", "r");
 
+  if(arquivo == NULL){
+    printf("Erro ao abrir arquivo\n");
+    system("exit");
+  }
+
+  while(fgetc(arquivo) != EOF){
+    
+    fseek(arquivo, -1, SEEK_CUR);
+    
+    pessoa = (Pessoa*) realloc(pessoa, ++n_pessoa * sizeof(Pessoa));
+    fscanf(arquivo, "id: %d\n", &pessoa[n_pessoa - 1].id_pessoa);
+    fscanf(arquivo, "nome: %[^\n]\n", &pessoa[n_pessoa - 1].nome);
+    fscanf(arquivo, "CPF: %[^\n]\n", &pessoa[n_pessoa - 1].CPF);
+    fscanf(arquivo, "email: %[^\n]\n", &pessoa[n_pessoa - 1].email);
+    fscanf(arquivo, "telefone: %[^\n]\n", &pessoa[n_pessoa - 1].telefone);
+    fscanf(arquivo, "funcao: %[^\n]\n", &pessoa[n_pessoa - 1].funcao);
+    fscanf(arquivo, "setor: %[^\n]\n", &pessoa[n_pessoa - 1].setor);
+  }
+
+  if(fclose(arquivo) == 0) {
+    
+  } else {
+    printf("Erro ao fechar arquivo\n");
+    system("pause");
+  }
+
+  for(int i = 0; i < n_pessoa; i++){
+    printf("ID: %d\n", pessoa[i].id_pessoa);
+    printf("nome: %s\n", pessoa[i].nome);
+    printf("CPF: %s\n", pessoa[i].CPF);
+    printf("E-mail: %s\n", pessoa[i].email);
+    printf("Telefone: %s\n", pessoa[i].telefone);
+    printf("Funcao: %s\n", pessoa[i].funcao);
+    printf("Setor: %s\n\n", pessoa[i].setor);
+  }
+  
   system("pause");
 
   while (menu != 0){
