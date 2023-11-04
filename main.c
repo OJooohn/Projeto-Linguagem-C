@@ -229,7 +229,7 @@ int main() {
 
   if(arquivo == NULL){
     printf("Erro ao abrir arquivo\n");
-    system("exit");
+    return 2;
   }
 
   while(fgetc(arquivo) != EOF){
