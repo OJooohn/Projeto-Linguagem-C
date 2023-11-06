@@ -77,6 +77,31 @@ int verificadorCPF(char *cCPF){
   
 }
 
+int validarID(int n_pessoa, int id, Pessoa *p){
+
+  int val = 0, retorno = 0;
+
+  if(n_pessoa > 1){
+      for(int i = 0; i < n_pessoa; i++){
+        if(id == p[i].id_pessoa){
+          val = 0;
+          break;
+        } else {
+          val = 1;
+        }
+      }
+    }
+
+    if(val >= 1){
+      retorno = 1;
+    } else {
+      retorno = 0;
+    }
+
+    return retorno;
+
+}
+
 void printMenu(){
   printf("**************************************************\n");
   printf("*                                                *\n");
@@ -111,22 +136,7 @@ void novoCadastro(int n, Pessoa *p, FILE *arquivo){
     printf("Digite o id: ");
     scanf("%d", &p[n].id_pessoa);
 
-    if(n > 1){
-      for(int i = 0; i < n; i++){
-        if(p[n].id_pessoa == p[i].id_pessoa){
-          val = 0;
-          break;
-        } else {
-          val = 1;
-        }
-      }
-    } else {
-      if(p[0].id_pessoa == p[1].id_pessoa)
-        val = 0;
-      else 
-        val = 1;
-        
-    }
+    val = validarID(n, p[n].id_pessoa, p);
 
     if(val >= 1){
       valID = 1;
@@ -187,6 +197,94 @@ void novoCadastro(int n, Pessoa *p, FILE *arquivo){
   
 }
 
+int excluirCadastro(Pessoa *p, FILE *arquivo, int n_pessoa){
+
+  arquivo = fopen("funcionarios.txt", "r+");
+
+  if(arquivo == NULL){
+    printf("Erro ao abrir arquivo\n");
+    system("exit");
+  }
+
+  int id, id_pessoa, linha_id = 1;
+
+  int valID = 0, val = 0;
+
+  while (valID == 0){
+    printf("Informe o id do cadastro: ");
+    scanf("%d", &id);
+
+    val = validarID(n_pessoa, id, p);
+
+    if(val >= 1){
+      printf("Id de pessoa nao cadastrada!\n");
+      system("pause");
+      valID = 0;
+    } else {
+      valID = 1;
+    }
+  }
+
+  if(valID >= 1){
+    char nome[100];
+    char CPF[15];
+    char email[100];
+    char telefone[15];
+    char funcao[30];
+    char setor[30];
+
+    while(fgetc(arquivo) != EOF){
+      
+      fseek(arquivo, -1, SEEK_CUR);
+      
+      fscanf(arquivo, "id: %d\n", &id_pessoa);
+
+      if(id_pessoa == id) {
+        break;
+      } else {
+        fscanf(arquivo, "nome: %[^\n]\n", &nome);
+        fscanf(arquivo, "CPF: %[^\n]\n", &CPF);
+        fscanf(arquivo, "email: %[^\n]\n", &email);
+        fscanf(arquivo, "telefone: %[^\n]\n", &telefone);
+        fscanf(arquivo, "funcao: %[^\n]\n", &funcao);
+        fscanf(arquivo, "setor: %[^\n]\n", &setor);
+        linha_id += 8;
+      }
+      
+    }
+
+    int i, j, aux;
+
+    for(int i = 0; i < n_pessoa; i++){
+      if(id == p[i].id_pessoa){
+        j = i;
+        aux = j;
+        p[j].id_pessoa = 0;
+        break;
+      }
+    }
+
+    for(j = aux; j < n_pessoa - 1; j++){
+      p[j].id_pessoa = p[j + 1].id_pessoa;
+      strncpy(p[j].nome, p[j + 1].nome, sizeof(p[j + 1].nome));
+      strncpy(p[j].CPF, p[j + 1].CPF, sizeof(p[j + 1].CPF));
+      strncpy(p[j].email, p[j + 1].email, sizeof(p[j + 1].email));
+      strncpy(p[j].telefone, p[j + 1].telefone, sizeof(p[j + 1].telefone));
+      strncpy(p[j].funcao, p[j + 1].funcao, sizeof(p[j + 1].funcao));
+      strncpy(p[j].setor, p[j + 1].setor, sizeof(p[j + 1].setor));
+    } 
+
+  }
+
+  printf("linha do id [%d] = %d\n", id, linha_id);
+  system("pause");
+
+  p = (Pessoa*) realloc(p, --n_pessoa * sizeof(Pessoa));
+  
+  return p;
+
+}
+
 void cadastroInformacao(Pessoa *p, int n){
   
   int id;
@@ -210,6 +308,38 @@ void cadastroInformacao(Pessoa *p, int n){
 
 }
 
+int lerArquivo(FILE *arquivo, Pessoa *p, int n_pessoa){
+
+  arquivo = fopen("funcionarios.txt", "r");
+
+  if(arquivo == NULL){
+    printf("Erro ao abrir arquivo\n");
+    return;
+  }
+
+  while(fgetc(arquivo) != EOF){
+    
+    fseek(arquivo, -1, SEEK_CUR);
+    
+    p = (Pessoa*) realloc(p, ++n_pessoa * sizeof(Pessoa));
+    fscanf(arquivo, "id: %d\n", &p[n_pessoa - 1].id_pessoa);
+    fscanf(arquivo, "nome: %[^\n]\n", &p[n_pessoa - 1].nome);
+    fscanf(arquivo, "CPF: %[^\n]\n", &p[n_pessoa - 1].CPF);
+    fscanf(arquivo, "email: %[^\n]\n", &p[n_pessoa - 1].email);
+    fscanf(arquivo, "telefone: %[^\n]\n", &p[n_pessoa - 1].telefone);
+    fscanf(arquivo, "funcao: %[^\n]\n", &p[n_pessoa - 1].funcao);
+    fscanf(arquivo, "setor: %[^\n]\n", &p[n_pessoa - 1].setor);
+  }
+
+  if(fclose(arquivo) != 0) {
+    printf("Erro ao fechar arquivo\n");
+    system("exit");
+  }
+
+  return p;
+  
+}
+
 int main() {
 
   FILE *arquivo;
@@ -225,30 +355,9 @@ int main() {
 
   int menu = 1, n_pessoa = 0;
 
-  arquivo = fopen("funcionarios.txt", "r");
-
-  if(arquivo == NULL){
-    printf("Erro ao abrir arquivo\n");
-    return 2;
-  }
-
-  while(fgetc(arquivo) != EOF){
-    
-    fseek(arquivo, -1, SEEK_CUR);
-    
-    pessoa = (Pessoa*) realloc(pessoa, ++n_pessoa * sizeof(Pessoa));
-    fscanf(arquivo, "id: %d\n", &pessoa[n_pessoa - 1].id_pessoa);
-    fscanf(arquivo, "nome: %[^\n]\n", &pessoa[n_pessoa - 1].nome);
-    fscanf(arquivo, "CPF: %[^\n]\n", &pessoa[n_pessoa - 1].CPF);
-    fscanf(arquivo, "email: %[^\n]\n", &pessoa[n_pessoa - 1].email);
-    fscanf(arquivo, "telefone: %[^\n]\n", &pessoa[n_pessoa - 1].telefone);
-    fscanf(arquivo, "funcao: %[^\n]\n", &pessoa[n_pessoa - 1].funcao);
-    fscanf(arquivo, "setor: %[^\n]\n", &pessoa[n_pessoa - 1].setor);
-  }
-
-  if(fclose(arquivo) != 0) {
-    printf("Erro ao fechar arquivo\n");
-    system("exit");
+  pessoa = lerArquivo(arquivo, pessoa, n_pessoa);
+  for(int i = 0; i < sizeof(pessoa) + 1; i++){
+    n_pessoa++;
   }
 
   for(int i = 0; i < n_pessoa; i++){
@@ -280,10 +389,23 @@ int main() {
       novoCadastro(n_pessoa - 1, pessoa, arquivo);
       break;
       
-      /*case 2: excluirCadastro();
+      case 2: 
+      pessoa = excluirCadastro(pessoa, arquivo, n_pessoa);
+      n_pessoa--;
+      for(int i = 0; i < n_pessoa; i++){
+        printf("ID: %d\n", pessoa[i].id_pessoa);
+        printf("nome: %s\n", pessoa[i].nome);
+        printf("CPF: %s\n", pessoa[i].CPF);
+        printf("E-mail: %s\n", pessoa[i].email);
+        printf("Telefone: %s\n", pessoa[i].telefone);
+        printf("Funcao: %s\n", pessoa[i].funcao);
+        printf("Setor: %s\n\n", pessoa[i].setor);
+      }
+
+      system("pause");
       break;
 
-      case 3: atualizarCadastro();
+      /*case 3: atualizarCadastro();
       break;*/
 
       case 4: cadastroInformacao(pessoa, n_pessoa);
