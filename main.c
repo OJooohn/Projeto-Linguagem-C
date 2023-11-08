@@ -276,6 +276,9 @@ int excluirCadastro(Pessoa *p, FILE *arquivo, int n_pessoa){
 
   }
 
+  // Professor deu a dica de ordenar o vetor e reescrever o .txt ordenado, assim otimizando a busca para as próximas vezes!
+  // Tentar usar o método mais rápido para ordenar o vetor
+
   printf("linha do id [%d] = %d\n", id, linha_id);
   system("pause");
 
