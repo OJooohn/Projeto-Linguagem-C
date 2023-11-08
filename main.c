@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <windows.h>
 
 typedef struct{
   int id_pessoa;
@@ -12,6 +13,73 @@ typedef struct{
   char funcao[30];
   char setor[30];
 } Pessoa;
+
+void borda(int n){
+  for(int i = 0; i < n + 1; i++){
+    printf("█");
+  }
+  printf("\n");
+}
+
+void seletoresInicio(int n){
+  printf("██");
+  for(int i = 0; i < n + 1; i++){
+    printf(" ");
+  }
+}
+
+void vazio(){
+  printf("██");
+  for(int i = 0; i < 97; i++){
+    printf(" ");
+  }
+  printf("██\n");
+}
+
+void printMenu(){
+  borda(100);
+  vazio();
+  seletoresInicio(40);
+//printf("MENU PRINCIPAL                                          ██\n");
+  printf("MENU PRINCIPAL                                          ██\n");
+  borda(100);
+  vazio();
+  seletoresInicio(35);
+  printf("0 - Sair programa                                            ██\n");
+  seletoresInicio(35);
+  printf("1 - Cadastrar novo funcionário                               ██\n");
+  seletoresInicio(35);
+  printf("2 - Excluir funcionário                                      ██\n");
+  seletoresInicio(35);
+  printf("3 - Atualizar cadastro                                       ██\n");
+  seletoresInicio(35);
+  printf("4 - Informação cadastro                                      ██\n");
+  seletoresInicio(35);
+  printf("5 - Recrutamento e seleção                                   ██\n");
+  seletoresInicio(35);
+  printf("6 - Controle de ponto                                        ██\n");
+  vazio();
+  borda(100);
+  printf("                                           Digite a opção: ");
+}
+
+void printCadastro(){
+  borda(100);
+  vazio();
+  seletoresInicio(43);
+//printf("MENU PRINCIPAL                                ██\n");
+  printf("CADASTRO                                             ██\n");
+  vazio();
+  borda(100);
+  vazio();
+  seletoresInicio(40);
+  printf("0 - Sair programa                                       ██\n");
+  seletoresInicio(40);
+  printf("Ou digite o ID                                          ██\n");
+  vazio();
+  borda(100);
+  printf("                                            Digite o id: ");
+}
 
 int verificadorCPF(char *cCPF){
   int i, j, *CPF;
@@ -33,7 +101,7 @@ int verificadorCPF(char *cCPF){
   }
 
   if(iguais == false){
-    printf("CPF invalido (digitos iguais)\n");
+    printf("CPF inválido (digitos iguais)\n");
     system("pause");
     return 2;
   }
@@ -50,7 +118,7 @@ int verificadorCPF(char *cCPF){
   }
 
   if(CPF[9] != num){
-    printf("CPF invalido!\n");
+    printf("CPF inválido!\n");
     system("pause");
     return 2;
   }
@@ -67,7 +135,7 @@ int verificadorCPF(char *cCPF){
   }
 
   if(CPF[10] != num){
-    printf("CPF invalido!\n");
+    printf("CPF inválido!\n");
     system("pause");
     return 2;
   }
@@ -102,38 +170,14 @@ int validarID(int n_pessoa, int id, Pessoa *p){
 
 }
 
-void printMenu(){
-  printf("**************************************************\n");
-  printf("*                                                *\n");
-  printf("*                 Menu Principal                 *\n");
-  printf("*                                                *\n");
-  printf("**************************************************\n");
-  printf("*                                                *\n");
-  printf("*     0 - Sair do programa                       *\n");
-  printf("*     1 - Cadastrar novo funcionario             *\n");
-  printf("*     2 - Excluir funcionario                    *\n");
-  printf("*     3 - Atualizar cadastro                     *\n");
-  printf("*     4 - Informacao cadastro                    *\n");
-  printf("*     5 - Recrutamento e selecao                 *\n");
-  printf("*     6 - Controle de ponto                      *\n");
-  printf("*                                                *\n");
-  printf("**************************************************\n");
-  printf("Digite a opcao: ");
-}
-
 void novoCadastro(int n, Pessoa *p, FILE *arquivo){
 
   int valID = 0, val = 0;
 
   system("cls");
-  printf("**************************************************\n");
-  printf("*                                                *\n");
-  printf("*                   Cadastro                     *\n");
-  printf("*                                                *\n");
-  printf("**************************************************\n");
+  printCadastro();
 
   while (valID == 0){
-    printf("Digite o id: ");
     scanf("%d", &p[n].id_pessoa);
 
     val = validarID(n, p[n].id_pessoa, p);
@@ -141,23 +185,23 @@ void novoCadastro(int n, Pessoa *p, FILE *arquivo){
     if(val >= 1){
       valID = 1;
     } else {
-      printf("Id de pessoa ja cadastrada!\n");
+      printf("Id de pessoa já cadastrada!\n");
       system("pause");
       valID = 0;
     }
   }
   
-  printf("Digite o nome: ");
+  printf("                                    Digite o nome: ");
   scanf(" %[^\n]", &p[n].nome);
-  printf("Digite seu CPF: ");
+  printf("                                    Digite seu CPF: ");
   scanf(" %[^\n]", &p[n].CPF);
-  printf("Digite seu e-mail: ");
+  printf("                                    Digite seu e-mail: ");
   scanf(" %[^\n]", &p[n].email);
-  printf("Digite seu telfone: ");
+  printf("                                    Digite seu telfone: ");
   scanf(" %[^\n]", &p[n].telefone);
-  printf("Digite a funcao: ");
+  printf("                                    Digite a função: ");
   scanf(" %[^\n]", &p[n].funcao);
-  printf("Digite o setor: ");
+  printf("                                    Digite o setor: ");
   scanf(" %[^\n]", &p[n].setor);
 
   int valCPF = verificadorCPF(&p[n].CPF);
@@ -195,7 +239,7 @@ int excluirCadastro(Pessoa *p, FILE *arquivo, int n_pessoa, int *n){
     val = validarID(n_pessoa, id, p);
 
     if(val >= 1){
-      printf("Id de pessoa nao cadastrada!\n");
+      printf("Id de pessoa não cadastrada!\n");
       system("pause");
       valID = 0;
     } else {
@@ -216,15 +260,15 @@ int excluirCadastro(Pessoa *p, FILE *arquivo, int n_pessoa, int *n){
 
     char caracter;
 
-    printf("Informacoes do cadastro:\n");
+    printf("Informações do cadastro:\n");
     printf("ID: %d\n", p[j].id_pessoa);
-    printf("nome: %s\n", p[j].nome);
+    printf("Nome: %s\n", p[j].nome);
     printf("CPF: %s\n", p[j].CPF);
     printf("E-mail: %s\n", p[j].email);
     printf("Telefone: %s\n", p[j].telefone);
-    printf("Funcao: %s\n", p[j].funcao);
+    printf("Função: %s\n", p[j].funcao);
     printf("Setor: %s\n", p[j].setor);
-    printf("Dejesa mesmo excluir este cadastro? (S/N): ");
+    printf("Deseja mesmo excluir este cadastro? (S/N): ");
     scanf(" %c", &caracter);
 
     if(tolower(caracter) == 's') {
@@ -262,7 +306,7 @@ void cadastroInformacao(Pessoa *p, int n){
     system("cls");
     printf("**************************************************\n");
     printf("*                                                *\n");
-    printf("*                 Informacao                     *\n");
+    printf("*                 Informação                     *\n");
     printf("*                                                *\n");
     printf("**************************************************\n");
     printf("*                                                *\n");
@@ -276,7 +320,7 @@ void cadastroInformacao(Pessoa *p, int n){
 
     if(menu < 0 || menu > 2){
       system("cls");
-      printf("Opcao invalida!\n");
+      printf("Opção inválida!\n");
       system("pause");
     }
 
@@ -289,16 +333,16 @@ void cadastroInformacao(Pessoa *p, int n){
         system("cls");
         printf("**************************************************\n");
         printf("*                                                *\n");
-        printf("*                 Informacao                     *\n");
+        printf("*                 Informação                     *\n");
         printf("*                                                *\n");
         printf("**************************************************\n");
         for(i = 0; i < n; i++){
           printf("ID: %d\n", p[i].id_pessoa);
-          printf("nome: %s\n", p[i].nome);
+          printf("Nome: %s\n", p[i].nome);
           printf("CPF: %s\n", p[i].CPF);
           printf("E-mail: %s\n", p[i].email);
           printf("Telefone: %s\n", p[i].telefone);
-          printf("Funcao: %s\n", p[i].funcao);
+          printf("Função: %s\n", p[i].funcao);
           printf("Setor: %s\n\n", p[i].setor);
         }
         system("pause");
@@ -311,18 +355,18 @@ void cadastroInformacao(Pessoa *p, int n){
         system("cls");
         printf("**************************************************\n");
         printf("*                                                *\n");
-        printf("*                 Informacao                     *\n");
+        printf("*                 Informação                     *\n");
         printf("*                                                *\n");
         printf("**************************************************\n");
 
         for(int i = 0; i < n; i++){
           if(id == p[i].id_pessoa) {
             printf("ID: %d\n", p[i].id_pessoa);
-            printf("nome: %s\n", p[i].nome);
+            printf("Nome: %s\n", p[i].nome);
             printf("CPF: %s\n", p[i].CPF);
             printf("E-mail: %s\n", p[i].email);
             printf("Telefone: %s\n", p[i].telefone);
-            printf("Funcao: %s\n", p[i].funcao);
+            printf("Função: %s\n", p[i].funcao);
             printf("Setor: %s\n", p[i].setor);
           }
         }
@@ -492,7 +536,6 @@ int lerArquivo(FILE *arquivo, Pessoa *p, int n_pessoa, int *n){
       }
 
       p = ordenarCadastro(p, n_pessoa - 1, 0, arquivo);
-
       *n = n_pessoa;
 
       return p;
@@ -502,14 +545,18 @@ int lerArquivo(FILE *arquivo, Pessoa *p, int n_pessoa, int *n){
 
 int main() {
 
+  UINT CPAGE_UTF8 = 65001;
+  UINT CPAGE_DEFAULT = GetConsoleOutputCP();
+
+  SetConsoleOutputCP(CPAGE_UTF8);
+
   FILE *arquivo;
  
   Pessoa *pessoa;
   pessoa = (Pessoa*) malloc(0 * sizeof(Pessoa));
 
-  
   if(pessoa == NULL){
-    printf("Erro de alocacao de memoria!\n");
+    printf("Erro de alocação de memória!\n");
     return 1;
   }
 
@@ -526,7 +573,7 @@ int main() {
 
     if(menu < 0 || menu > 6){
       system("cls");
-      printf("Opcao invalida!\n");
+      printf("Opção inválida!\n");
       system("pause");
     }
 
@@ -541,16 +588,13 @@ int main() {
       if(n_pessoa > 0){
         aux = n_pessoa;
         pessoa = excluirCadastro(pessoa, arquivo, n_pessoa, &n_pessoa);
-        printf("n_pessoa antes -- = %d\n", n_pessoa);
         n_pessoa--;
         if(aux > n_pessoa)
           n_pessoa++;
-        printf("n_pessoa depois -- = %d\n", n_pessoa);
-        system("pause");
         imprimirOrdenacao(pessoa, arquivo, n_pessoa);
       } else {
         printf("Nenhum cadastro no banco de dados!\n");
-        printf("Faca um cadastro antes usando a opcao 1\n");
+        printf("Faça um cadastro antes usando a opção 1\n");
         system("pause");
         break;
       }
@@ -563,7 +607,7 @@ int main() {
         cadastroInformacao(pessoa, n_pessoa);
       } else {
         printf("Nenhum cadastro no banco de dados!\n");
-        printf("Faca um cadastro antes usando a opcao 1\n");
+        printf("Faça um cadastro antes usando a opção 1\n");
         system("pause");
         break;
       }
