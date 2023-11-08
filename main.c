@@ -255,25 +255,83 @@ int excluirCadastro(Pessoa *p, FILE *arquivo, int n_pessoa, int *n){
 }
 
 void cadastroInformacao(Pessoa *p, int n){
-  
-  int id;
 
-  printf("Digite o id da pessoa: ");
-  scanf("%d", &id);
+  int menu, i, id;
 
-  for(int i = 0; i < n; i++){
-    if(id == p[i].id_pessoa) {
-      printf("ID: %d\n", p[i].id_pessoa);
-      printf("nome: %s\n", p[i].nome);
-      printf("CPF: %s\n", p[i].CPF);
-      printf("E-mail: %s\n", p[i].email);
-      printf("Telefone: %s\n", p[i].telefone);
-      printf("Funcao: %s\n", p[i].funcao);
-      printf("Setor: %s\n", p[i].setor);
+  while (menu != 0){
+    system("cls");
+    printf("**************************************************\n");
+    printf("*                                                *\n");
+    printf("*                 Informacao                     *\n");
+    printf("*                                                *\n");
+    printf("**************************************************\n");
+    printf("*                                                *\n");
+    printf("*     0 - Menu principal                         *\n");
+    printf("*     1 - Listar todos os cadastros              *\n");
+    printf("*     2 - Listar apenas um                       *\n");
+    printf("*                                                *\n");
+    printf("**************************************************\n");
+    printf("Digite a opcao: ");
+    scanf("%d", &menu);
+
+    if(menu < 0 || menu > 2){
+      system("cls");
+      printf("Opcao invalida!\n");
+      system("pause");
     }
-  }
 
-  system("pause");
+    switch (menu){
+      case 0:
+        return;
+        break;
+
+      case 1:
+        system("cls");
+        printf("**************************************************\n");
+        printf("*                                                *\n");
+        printf("*                 Informacao                     *\n");
+        printf("*                                                *\n");
+        printf("**************************************************\n");
+        for(i = 0; i < n; i++){
+          printf("ID: %d\n", p[i].id_pessoa);
+          printf("nome: %s\n", p[i].nome);
+          printf("CPF: %s\n", p[i].CPF);
+          printf("E-mail: %s\n", p[i].email);
+          printf("Telefone: %s\n", p[i].telefone);
+          printf("Funcao: %s\n", p[i].funcao);
+          printf("Setor: %s\n\n", p[i].setor);
+        }
+        system("pause");
+        break;
+
+      case 2:
+        printf("Digite o id da pessoa: ");
+        scanf("%d", &id);
+
+        system("cls");
+        printf("**************************************************\n");
+        printf("*                                                *\n");
+        printf("*                 Informacao                     *\n");
+        printf("*                                                *\n");
+        printf("**************************************************\n");
+
+        for(int i = 0; i < n; i++){
+          if(id == p[i].id_pessoa) {
+            printf("ID: %d\n", p[i].id_pessoa);
+            printf("nome: %s\n", p[i].nome);
+            printf("CPF: %s\n", p[i].CPF);
+            printf("E-mail: %s\n", p[i].email);
+            printf("Telefone: %s\n", p[i].telefone);
+            printf("Funcao: %s\n", p[i].funcao);
+            printf("Setor: %s\n", p[i].setor);
+          }
+        }
+
+        system("pause");
+        break;
+    }
+
+  }
 
 }
 
