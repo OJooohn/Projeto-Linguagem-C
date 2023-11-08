@@ -173,11 +173,11 @@ void novoCadastro(int n, Pessoa *p, FILE *arquivo){
     }
   }
 
-  ordenarCadastro(p, n, n - 1, arquivo, 1);
+  ordenarCadastro(p, n, n - 1, arquivo);
   
 }
 
-int excluirCadastro(Pessoa *p, FILE *arquivo, int n_pessoa){
+int excluirCadastro(Pessoa *p, FILE *arquivo, int n_pessoa, int *n){
 
   arquivo = fopen("funcionarios.txt", "r+");
 
@@ -186,9 +186,7 @@ int excluirCadastro(Pessoa *p, FILE *arquivo, int n_pessoa){
     system("exit");
   }
 
-  int id, id_pessoa, linha_id = 1;
-
-  int valID = 0, val = 0;
+  int id, valID = 0, val = 0;
 
   while (valID == 0){
     printf("Informe o id do cadastro: ");
@@ -206,64 +204,53 @@ int excluirCadastro(Pessoa *p, FILE *arquivo, int n_pessoa){
   }
 
   if(valID >= 1){
-    char nome[100];
-    char CPF[15];
-    char email[100];
-    char telefone[15];
-    char funcao[30];
-    char setor[30];
 
-    while(fgetc(arquivo) != EOF){
-      
-      fseek(arquivo, -1, SEEK_CUR);
-      
-      fscanf(arquivo, "id: %d\n", &id_pessoa);
-
-      if(id_pessoa == id) {
-        break;
-      } else {
-        fscanf(arquivo, "nome: %[^\n]\n", &nome);
-        fscanf(arquivo, "CPF: %[^\n]\n", &CPF);
-        fscanf(arquivo, "email: %[^\n]\n", &email);
-        fscanf(arquivo, "telefone: %[^\n]\n", &telefone);
-        fscanf(arquivo, "funcao: %[^\n]\n", &funcao);
-        fscanf(arquivo, "setor: %[^\n]\n", &setor);
-        linha_id += 8;
-      }
-      
-    }
-
-    int i, j, aux;
+    int i, j;
 
     for(int i = 0; i < n_pessoa; i++){
       if(id == p[i].id_pessoa){
         j = i;
-        aux = j;
-        p[j].id_pessoa = 0;
         break;
       }
     }
 
-    for(j = aux; j < n_pessoa - 1; j++){
-      p[j].id_pessoa = p[j + 1].id_pessoa;
-      strncpy(p[j].nome, p[j + 1].nome, sizeof(p[j + 1].nome));
-      strncpy(p[j].CPF, p[j + 1].CPF, sizeof(p[j + 1].CPF));
-      strncpy(p[j].email, p[j + 1].email, sizeof(p[j + 1].email));
-      strncpy(p[j].telefone, p[j + 1].telefone, sizeof(p[j + 1].telefone));
-      strncpy(p[j].funcao, p[j + 1].funcao, sizeof(p[j + 1].funcao));
-      strncpy(p[j].setor, p[j + 1].setor, sizeof(p[j + 1].setor));
-    } 
+    char caracter;
+
+    printf("Informacoes do cadastro:\n");
+    printf("ID: %d\n", p[j].id_pessoa);
+    printf("nome: %s\n", p[j].nome);
+    printf("CPF: %s\n", p[j].CPF);
+    printf("E-mail: %s\n", p[j].email);
+    printf("Telefone: %s\n", p[j].telefone);
+    printf("Funcao: %s\n", p[j].funcao);
+    printf("Setor: %s\n", p[j].setor);
+    printf("Dejesa mesmo excluir este cadastro? (S/N): ");
+    scanf(" %c", &caracter);
+
+    if(tolower(caracter) == 's') {
+      for(j = j; j < n_pessoa - 1; j++){
+        p[j].id_pessoa = p[j + 1].id_pessoa;
+        strncpy(p[j].nome, p[j + 1].nome, sizeof(p[j + 1].nome));
+        strncpy(p[j].CPF, p[j + 1].CPF, sizeof(p[j + 1].CPF));
+        strncpy(p[j].email, p[j + 1].email, sizeof(p[j + 1].email));
+        strncpy(p[j].telefone, p[j + 1].telefone, sizeof(p[j + 1].telefone));
+        strncpy(p[j].funcao, p[j + 1].funcao, sizeof(p[j + 1].funcao));
+        strncpy(p[j].setor, p[j + 1].setor, sizeof(p[j + 1].setor));
+      } 
+
+
+      p = (Pessoa*) realloc(p, --n_pessoa * sizeof(Pessoa));
+      *n = n_pessoa;
+      
+      return p;
+
+    } else {
+      p = (Pessoa*) realloc(p, n_pessoa * sizeof(Pessoa));
+      *n = n_pessoa++;
+      return p;
+    }
 
   }
-
-  // Professor deu a dica de ordenar o vetor e reescrever o .txt ordenado, assim otimizando a busca para as próximas vezes!
-  // Tentar usar o método mais rápido para ordenar o vetor
-
-  p = (Pessoa*) realloc(p, --n_pessoa * sizeof(Pessoa));
-
-  imprimirOrdenacao(p, arquivo, sizeof(p));
-  
-  return p;
 
 }
 
@@ -290,7 +277,7 @@ void cadastroInformacao(Pessoa *p, int n){
 
 }
 
-int ordenarCadastro(Pessoa *p, int n_fim, int n_inicio, FILE *arquivo, int nCadastro){
+int ordenarCadastro(Pessoa *p, int n_fim, int n_inicio, FILE *arquivo){
 
   typedef struct{
     int id_pessoa;
@@ -307,8 +294,8 @@ int ordenarCadastro(Pessoa *p, int n_fim, int n_inicio, FILE *arquivo, int nCada
   if(n_inicio == n_fim) return;
   metTam = (n_inicio + n_fim) / 2;
 
-  ordenarCadastro(p, n_inicio, metTam, arquivo, 0);
-  ordenarCadastro(p, metTam + 1, n_fim, arquivo, 0);
+  ordenarCadastro(p, n_inicio, metTam, arquivo);
+  ordenarCadastro(p, metTam + 1, n_fim, arquivo);
   i = n_inicio;
   j = metTam + 1;
   k = 0;
@@ -371,14 +358,8 @@ int ordenarCadastro(Pessoa *p, int n_fim, int n_inicio, FILE *arquivo, int nCada
     strncpy(p[i].funcao, pessoa[i - n_inicio].funcao, sizeof(pessoa[i - n_inicio].funcao));
     strncpy(p[i].setor, pessoa[i - n_inicio].setor, sizeof(pessoa[i - n_inicio].setor));
   }
+
   free(pessoa);
-
-  if(nCadastro != 1){
-    imprimirOrdenacao(p, arquivo, sizeof(p) + 1);
-
-  } else {
-    imprimirOrdenacao(p, arquivo, sizeof(p) + 2);
-  }
 
   return p;
 
@@ -416,7 +397,7 @@ void imprimirOrdenacao(Pessoa *p, FILE *arquivo, int n_pessoa){
 
 }
 
-int lerArquivo(FILE *arquivo, Pessoa *p, int n_pessoa){
+int lerArquivo(FILE *arquivo, Pessoa *p, int n_pessoa, int *n){
 
   arquivo = fopen("funcionarios.txt", "r");
 
@@ -425,28 +406,39 @@ int lerArquivo(FILE *arquivo, Pessoa *p, int n_pessoa){
     return;
   }
 
-  while(fgetc(arquivo) != EOF){
-    
-    fseek(arquivo, -1, SEEK_CUR);
-    
-    p = (Pessoa*) realloc(p, ++n_pessoa * sizeof(Pessoa));
-    fscanf(arquivo, "id: %d\n", &p[n_pessoa - 1].id_pessoa);
-    fscanf(arquivo, "nome: %[^\n]\n", &p[n_pessoa - 1].nome);
-    fscanf(arquivo, "CPF: %[^\n]\n", &p[n_pessoa - 1].CPF);
-    fscanf(arquivo, "email: %[^\n]\n", &p[n_pessoa - 1].email);
-    fscanf(arquivo, "telefone: %[^\n]\n", &p[n_pessoa - 1].telefone);
-    fscanf(arquivo, "funcao: %[^\n]\n", &p[n_pessoa - 1].funcao);
-    fscanf(arquivo, "setor: %[^\n]\n", &p[n_pessoa - 1].setor);
+  char caracter;
+  fscanf(arquivo, "%c", &caracter);
+  fseek(arquivo, -1, SEEK_CUR);
+
+  if(caracter == NULL){
+    *n = 0;
+    return p;
+  } else {
+    while(fgetc(arquivo) != EOF){
+      
+      fseek(arquivo, -1, SEEK_CUR);
+
+      p = (Pessoa*) realloc(p, ++n_pessoa * sizeof(Pessoa));
+      fscanf(arquivo, "id: %d\n", &p[n_pessoa - 1].id_pessoa);
+      fscanf(arquivo, "nome: %[^\n]\n", &p[n_pessoa - 1].nome);
+      fscanf(arquivo, "CPF: %[^\n]\n", &p[n_pessoa - 1].CPF);
+      fscanf(arquivo, "email: %[^\n]\n", &p[n_pessoa - 1].email);
+      fscanf(arquivo, "telefone: %[^\n]\n", &p[n_pessoa - 1].telefone);
+      fscanf(arquivo, "funcao: %[^\n]\n", &p[n_pessoa - 1].funcao);
+      fscanf(arquivo, "setor: %[^\n]\n", &p[n_pessoa - 1].setor);
+    }
+
+      if(fclose(arquivo) != 0) {
+        printf("Erro ao fechar arquivo\n");
+        system("exit");
+      }
+
+      p = ordenarCadastro(p, n_pessoa - 1, 0, arquivo);
+
+      *n = n_pessoa;
+
+      return p;
   }
-
-  if(fclose(arquivo) != 0) {
-    printf("Erro ao fechar arquivo\n");
-    system("exit");
-  }
-
-  p = ordenarCadastro(p, n_pessoa - 1, 0, arquivo, 0);
-
-  return p;
   
 }
 
@@ -463,23 +455,13 @@ int main() {
     return 1;
   }
 
-  int menu = 1, n_pessoa = 0;
+  int menu = 1, n_pessoa = 0, aux;
 
-  pessoa = lerArquivo(arquivo, pessoa, n_pessoa);
-  n_pessoa = sizeof(pessoa) + 1;
+  pessoa = lerArquivo(arquivo, pessoa, n_pessoa, &n_pessoa);
+  if(n_pessoa != 0)
+    n_pessoa = sizeof(pessoa) + 1;
 
   while (menu != 0){
-    /*for(int i = 0; i < n_pessoa; i++){
-      printf("ID: %d\n", pessoa[i].id_pessoa);
-      printf("nome: %s\n", pessoa[i].nome);
-      printf("CPF: %s\n", pessoa[i].CPF);
-      printf("E-mail: %s\n", pessoa[i].email);
-      printf("Telefone: %s\n", pessoa[i].telefone);
-      printf("Funcao: %s\n", pessoa[i].funcao);
-      printf("Setor: %s\n\n", pessoa[i].setor);
-    }
-    system("pause");*/
-  
     system("cls");
     printMenu();
     scanf("%d", &menu);
@@ -494,29 +476,39 @@ int main() {
       case 1:
       pessoa = (Pessoa*) realloc(pessoa, ++n_pessoa * sizeof(Pessoa));
       novoCadastro(n_pessoa - 1, pessoa, arquivo);
+      imprimirOrdenacao(pessoa, arquivo, n_pessoa);
       break;
       
-      case 2: 
-      pessoa = excluirCadastro(pessoa, arquivo, n_pessoa);
-      n_pessoa--;
-      for(int i = 0; i < n_pessoa; i++){
-        printf("ID: %d\n", pessoa[i].id_pessoa);
-        printf("nome: %s\n", pessoa[i].nome);
-        printf("CPF: %s\n", pessoa[i].CPF);
-        printf("E-mail: %s\n", pessoa[i].email);
-        printf("Telefone: %s\n", pessoa[i].telefone);
-        printf("Funcao: %s\n", pessoa[i].funcao);
-        printf("Setor: %s\n\n", pessoa[i].setor);
+      case 2:
+      if(n_pessoa > 0){
+        aux = n_pessoa;
+        pessoa = excluirCadastro(pessoa, arquivo, n_pessoa, &n_pessoa);
+        printf("n_pessoa antes -- = %d\n", n_pessoa);
+        n_pessoa--;
+        if(aux > n_pessoa)
+          n_pessoa++;
+        printf("n_pessoa depois -- = %d\n", n_pessoa);
+        system("pause");
+        imprimirOrdenacao(pessoa, arquivo, n_pessoa);
+      } else {
+        printf("Nenhum cadastro no banco de dados!\n");
+        printf("Faca um cadastro antes usando a opcao 1\n");
+        system("pause");
+        break;
       }
-
-      system("pause");
-      break;
 
       /*case 3: atualizarCadastro();
       break;*/
 
-      case 4: cadastroInformacao(pessoa, n_pessoa);
-      break;
+      case 4:
+      if(n_pessoa > 0) {
+        cadastroInformacao(pessoa, n_pessoa);
+      } else {
+        printf("Nenhum cadastro no banco de dados!\n");
+        printf("Faca um cadastro antes usando a opcao 1\n");
+        system("pause");
+        break;
+      }
 
       /*case 5: recrutamentoSelecao();
       break;
