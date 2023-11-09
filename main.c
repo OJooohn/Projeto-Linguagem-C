@@ -79,7 +79,19 @@ int verificadorCPF(char *cCPF){
 
 int validarID(int n_pessoa, int id, Pessoa *p){
 
-  int val = 0, retorno = 0;
+  int val = 0, retorno = 0; //problema aqui?
+    printf("ele entra aq? n_pessoa = %d | id = %d\n | p[0].id_pessoa = %d", n_pessoa, id, p[0].id_pessoa);
+    system("pause");
+  if(n_pessoa == 1){
+    if(id == p[0].id_pessoa){
+      retorno = 0;
+    } else {printf("ele entra aq?2 n_pessoa = %d | id = %d\n", n_pessoa, id);
+    system("pause");
+      retorno = 1;
+    }
+    
+    return retorno;
+  }
 
   if(n_pessoa > 1){
       for(int i = 0; i < n_pessoa; i++){
@@ -121,9 +133,9 @@ void printMenu(){
   printf("Digite a opcao: ");
 }
 
-void novoCadastro(int n, Pessoa *p, FILE *arquivo){
+int novoCadastro(int n, Pessoa *p, FILE *arquivo, int *n_pessoa){
 
-  int valID = 0, val = 0;
+  int valID = 0, val = 0, id;
 
   system("cls");
   printf("**************************************************\n");
@@ -131,41 +143,104 @@ void novoCadastro(int n, Pessoa *p, FILE *arquivo){
   printf("*                   Cadastro                     *\n");
   printf("*                                                *\n");
   printf("**************************************************\n");
+  printf("*                                                *\n");
+  printf("*     0 - Menu principal                         *\n");
+  printf("*     Ou digite o ID                             *\n");
+  printf("*                                                *\n");
+  printf("**************************************************\n");
+
+  if(n == 0){
+    printf("Digite o id: ");
+    scanf("%d", &id);
+
+    if(id == 0){
+      return p;
+    } else {
+      n++;
+      p = (Pessoa*) realloc(p, n * sizeof(Pessoa));
+      p[n - 1].id_pessoa = id;
+      printf("Digite o nome: ");
+      scanf(" %[^\n]", &p[n - 1].nome);
+      printf("Digite seu CPF: ");
+      scanf(" %[^\n]", &p[n - 1].CPF);
+      printf("Digite seu e-mail: ");
+      scanf(" %[^\n]", &p[n - 1].email);
+      printf("Digite seu telfone: ");
+      scanf(" %[^\n]", &p[n - 1].telefone);
+      printf("Digite a funcao: ");
+      scanf(" %[^\n]", &p[n - 1].funcao);
+      printf("Digite o setor: ");
+      scanf(" %[^\n]", &p[n - 1].setor);
+
+      int valCPF = verificadorCPF(&p[n - 1].CPF);
+
+      while(valCPF == 2){
+        printf("Digite seu CPF: ");
+        scanf(" %[^\n]", &p[n - 1].CPF);
+        valCPF = verificadorCPF(&p[n - 1].CPF);
+        if(valCPF == 1){
+          valCPF = 1;
+        } else {
+          valCPF = 2;
+        }
+      }
+    
+      *n_pessoa = n;
+    
+      return p;
+    }
+
+  }
 
   while (valID == 0){
     printf("Digite o id: ");
-    scanf("%d", &p[n].id_pessoa);
+    scanf("%d", &id);
 
-    val = validarID(n, p[n].id_pessoa, p);
-
-    if(val >= 1){
-      valID = 1;
+    if(id == 0){
+      p = (Pessoa*) realloc(p, n * sizeof(Pessoa));
+      return p;
+      break;
     } else {
-      printf("Id de pessoa ja cadastrada!\n");
+      printf("este aqui n = %d", n);
       system("pause");
-      valID = 0;
+      val = validarID(n, id, p); //problema aqui?
+      
+      if(val >= 1){
+        n++;
+        valID = 1;
+      } else {
+        printf("Id de pessoa ja cadastrada!\n");
+        system("pause");
+        valID = 0;
+      }
     }
+
   }
+
+  printf("cucucu %d !\n", n);
+  system("pause");
+  p = (Pessoa*) realloc(p, n * sizeof(Pessoa));
   
+  p[n - 1].id_pessoa = id;
   printf("Digite o nome: ");
-  scanf(" %[^\n]", &p[n].nome);
+  scanf(" %[^\n]", &p[n - 1].nome);
   printf("Digite seu CPF: ");
-  scanf(" %[^\n]", &p[n].CPF);
+  scanf(" %[^\n]", &p[n - 1].CPF);
   printf("Digite seu e-mail: ");
-  scanf(" %[^\n]", &p[n].email);
+  scanf(" %[^\n]", &p[n - 1].email);
   printf("Digite seu telfone: ");
-  scanf(" %[^\n]", &p[n].telefone);
+  scanf(" %[^\n]", &p[n - 1].telefone);
   printf("Digite a funcao: ");
-  scanf(" %[^\n]", &p[n].funcao);
+  scanf(" %[^\n]", &p[n - 1].funcao);
   printf("Digite o setor: ");
-  scanf(" %[^\n]", &p[n].setor);
+  scanf(" %[^\n]", &p[n - 1].setor);
 
   int valCPF = verificadorCPF(&p[n].CPF);
 
   while(valCPF == 2){
     printf("Digite seu CPF: ");
     scanf(" %[^\n]", &p[n].CPF);
-    valCPF = verificadorCPF(&p[n].CPF);
+    valCPF = verificadorCPF(&p[n - 1].CPF);
     if(valCPF == 1){
       valCPF = 1;
     } else {
@@ -173,7 +248,11 @@ void novoCadastro(int n, Pessoa *p, FILE *arquivo){
     }
   }
 
-  ordenarCadastro(p, n, n - 1, arquivo);
+
+  *n_pessoa = n;
+  ordenarCadastro(p, n - 1 , 0, arquivo);
+
+  return p;
   
 }
 
@@ -490,10 +569,12 @@ int lerArquivo(FILE *arquivo, Pessoa *p, int n_pessoa, int *n){
         printf("Erro ao fechar arquivo\n");
         system("exit");
       }
-
+      
       p = ordenarCadastro(p, n_pessoa - 1, 0, arquivo);
-
+      
       *n = n_pessoa;
+      printf("essa buceta? n = %d", *n);
+      system("pause");
 
       return p;
   }
@@ -516,8 +597,8 @@ int main() {
   int menu = 1, n_pessoa = 0, aux;
 
   pessoa = lerArquivo(arquivo, pessoa, n_pessoa, &n_pessoa);
-  if(n_pessoa != 0)
-    n_pessoa = sizeof(pessoa) + 1;
+  printf("n_pessoa main = %d", n_pessoa);
+  system("pause");
 
   while (menu != 0){
     system("cls");
@@ -532,8 +613,7 @@ int main() {
 
     switch (menu){
       case 1:
-      pessoa = (Pessoa*) realloc(pessoa, ++n_pessoa * sizeof(Pessoa));
-      novoCadastro(n_pessoa - 1, pessoa, arquivo);
+      pessoa = novoCadastro(n_pessoa, pessoa, arquivo, &n_pessoa);
       imprimirOrdenacao(pessoa, arquivo, n_pessoa);
       break;
       
@@ -541,13 +621,11 @@ int main() {
       if(n_pessoa > 0){
         aux = n_pessoa;
         pessoa = excluirCadastro(pessoa, arquivo, n_pessoa, &n_pessoa);
-        printf("n_pessoa antes -- = %d\n", n_pessoa);
         n_pessoa--;
         if(aux > n_pessoa)
           n_pessoa++;
-        printf("n_pessoa depois -- = %d\n", n_pessoa);
-        system("pause");
         imprimirOrdenacao(pessoa, arquivo, n_pessoa);
+        break;
       } else {
         printf("Nenhum cadastro no banco de dados!\n");
         printf("Faca um cadastro antes usando a opcao 1\n");
