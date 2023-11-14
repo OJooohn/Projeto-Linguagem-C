@@ -1,25 +1,112 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
+#include <windows.h>
 
-typedef struct{
+void borda(int n){
+  for(int i = 0; i < n + 1; i++){
+    printf("█");
+  }
+  printf("\n");
+}
+
+void seletoresInicio(int n){
+  printf("██");
+  for(int i = 0; i < n + 1; i++){
+    printf(" ");
+  }
+}
+
+void vazio(){
+  printf("██");
+  for(int i = 0; i < 97; i++){
+    printf(" ");
+  }
+  printf("██\n");
+}
+
+void printMenu(){
+  borda(100); vazio(); seletoresInicio(39);
+  printf("MENU PRINCIPAL                                           ██\n");
+  vazio(); borda(100); vazio(); seletoresInicio(5);
+  printf("0 - Sair programa                                                                          ██\n");
+  seletoresInicio(5);
+  printf("1 - Cadastrar novo funcionário                                                             ██\n");
+  seletoresInicio(5);
+  printf("2 - Excluir funcionário                                                                    ██\n");
+  seletoresInicio(5);
+  printf("3 - Atualizar cadastro                                                                     ██\n");
+  seletoresInicio(5);
+  printf("4 - Informação cadastro                                                                    ██\n");
+  vazio(); borda(100);
+  printf("\n        Digite a opção: ");
+}
+
+void printCadastro(){
+  borda(100); vazio(); seletoresInicio(42);
+  printf("CADASTRO                                              ██\n");
+  vazio(); borda(100); vazio(); seletoresInicio(5);
+  printf("0 - Menu principal                                                                         ██\n");
+  seletoresInicio(5);
+  printf("1 - Digitar ID                                                                             ██\n");
+  vazio(); borda(100);
+}
+
+void printExcluir(){
+  borda(100); vazio(); seletoresInicio(38);
+  printf("EXCLUIR CADASTRO                                          ██\n");
+  vazio(); borda(100); vazio(); seletoresInicio(5);
+  printf("0 - Menu principal                                                                         ██\n");
+  seletoresInicio(5);
+  printf("1 - Digitar ID                                                                             ██\n");
+  vazio(); borda(100);
+}
+
+void printAtualizar(){
+  borda(100); vazio(); seletoresInicio(38);
+  printf("ATUALIZAR CADASTRO                                        ██\n");
+  vazio(); borda(100); vazio(); seletoresInicio(5);
+  printf("0 - Menu principal                                                                         ██\n");
+  seletoresInicio(5);
+  printf("1 - Digitar ID                                                                             ██\n");
+  vazio(); borda(100);
+}
+
+void printInformacao(){
+  borda(100); vazio(); seletoresInicio(40);
+  printf("INFORMAÇÃO                                              ██\n");
+  vazio(); borda(100); vazio(); seletoresInicio(5);
+  printf("0 - Menu principal                                                                         ██\n");
+  seletoresInicio(5);
+  printf("1 - Listar todos os cadastros                                                              ██\n");
+  seletoresInicio(5);
+  printf("2 - Listar somente [ID] cadastro                                                           ██\n");
+  seletoresInicio(5);
+  printf("3 - Listar intervalo de cadastros                                                          ██\n");
+  vazio(); borda(100);
+}
+
+typedef struct {
+
   int id_pessoa;
-  char nome[100];
+  char nome[70];
   char CPF[15];
-  char email[100];
+  char email[70];
   char telefone[15];
   char funcao[30];
   char setor[30];
+
 } Pessoa;
 
-int verificadorCPF(char *cCPF){
+int verificarCPF(char *CPF_digitado){
+
   int i, j, *CPF;
   CPF = (int*) malloc(11 * sizeof(int));
   
-  for(i = 0, j = 0; i < strlen(cCPF); i++){
-    if(cCPF[i] >= 48 && cCPF[i] <= 57){
-      CPF[j] = cCPF[i] - 48;
+  for(i = 0, j = 0; i < strlen(CPF_digitado); i++){
+    if(CPF_digitado[i] >= 48 && CPF_digitado[i] <= 57){
+      CPF[j] = CPF_digitado[i] - 48;
       j++;
     }
   }
@@ -33,9 +120,8 @@ int verificadorCPF(char *cCPF){
   }
 
   if(iguais == false){
-    printf("CPF invalido (digitos iguais)\n");
-    system("pause");
-    return 2;
+    printf("        CPF inválido (digitos iguais)\n\n"); system("pause");
+    return 0;
   }
 
   int soma = 0, num;
@@ -50,9 +136,8 @@ int verificadorCPF(char *cCPF){
   }
 
   if(CPF[9] != num){
-    printf("CPF invalido!\n");
-    system("pause");
-    return 2;
+    printf("        CPF inválido!\n\n"); system("pause");
+    return 0;
   }
 
   soma = 0;
@@ -67,360 +152,60 @@ int verificadorCPF(char *cCPF){
   }
 
   if(CPF[10] != num){
-    printf("CPF invalido!\n");
-    system("pause");
-    return 2;
+    printf("        CPF inválido!\n\n"); system("pause");
+    return 0;
   }
+
+  char padrao[15];
+
+  for(i = 0, j = 0; i < 15; i++){
+
+    if(i == 3 || i == 7){
+      padrao[i] = '.';
+      i++; j++;
+      padrao[i] = CPF[j - 1] + 48;
+    } else {
+      if(i == 11){
+        padrao[i] = '-';
+        i++; j++;
+        padrao[i] = CPF[j - 1] + 48;
+      } else {
+        padrao[i] = CPF[j] + 48;
+        j++;
+      }
+    }
+  }
+
+  padrao[14] = '\0';
+
+  strncpy(CPF_digitado, padrao, sizeof(padrao));
 
   free(CPF);
   return 1;
-  
-}
-
-int validarID(int n_pessoa, int id, Pessoa *p){
-
-  int val = 0, retorno = 0; //problema aqui?
-    printf("ele entra aq? n_pessoa = %d | id = %d\n | p[0].id_pessoa = %d", n_pessoa, id, p[0].id_pessoa);
-    system("pause");
-  if(n_pessoa == 1){
-    if(id == p[0].id_pessoa){
-      retorno = 0;
-    } else {printf("ele entra aq?2 n_pessoa = %d | id = %d\n", n_pessoa, id);
-    system("pause");
-      retorno = 1;
-    }
-    
-    return retorno;
-  }
-
-  if(n_pessoa > 1){
-      for(int i = 0; i < n_pessoa; i++){
-        if(id == p[i].id_pessoa){
-          val = 0;
-          break;
-        } else {
-          val = 1;
-        }
-      }
-    }
-
-    if(val >= 1){
-      retorno = 1;
-    } else {
-      retorno = 0;
-    }
-
-    return retorno;
 
 }
 
-void printMenu(){
-  printf("**************************************************\n");
-  printf("*                                                *\n");
-  printf("*                 Menu Principal                 *\n");
-  printf("*                                                *\n");
-  printf("**************************************************\n");
-  printf("*                                                *\n");
-  printf("*     0 - Sair do programa                       *\n");
-  printf("*     1 - Cadastrar novo funcionario             *\n");
-  printf("*     2 - Excluir funcionario                    *\n");
-  printf("*     3 - Atualizar cadastro                     *\n");
-  printf("*     4 - Informacao cadastro                    *\n");
-  printf("*     5 - Recrutamento e selecao                 *\n");
-  printf("*     6 - Controle de ponto                      *\n");
-  printf("*                                                *\n");
-  printf("**************************************************\n");
-  printf("Digite a opcao: ");
-}
+int verificarID(Pessoa *pessoa, int id_digitado, int n_pessoa){
 
-int novoCadastro(int n, Pessoa *p, FILE *arquivo, int *n_pessoa){
+  int i;
 
-  int valID = 0, val = 0, id;
-
-  system("cls");
-  printf("**************************************************\n");
-  printf("*                                                *\n");
-  printf("*                   Cadastro                     *\n");
-  printf("*                                                *\n");
-  printf("**************************************************\n");
-  printf("*                                                *\n");
-  printf("*     0 - Menu principal                         *\n");
-  printf("*     Ou digite o ID                             *\n");
-  printf("*                                                *\n");
-  printf("**************************************************\n");
-
-  if(n == 0){
-    printf("Digite o id: ");
-    scanf("%d", &id);
-
-    if(id == 0){
-      return p;
-    } else {
-      n++;
-      p = (Pessoa*) realloc(p, n * sizeof(Pessoa));
-      p[n - 1].id_pessoa = id;
-      printf("Digite o nome: ");
-      scanf(" %[^\n]", &p[n - 1].nome);
-      printf("Digite seu CPF: ");
-      scanf(" %[^\n]", &p[n - 1].CPF);
-      printf("Digite seu e-mail: ");
-      scanf(" %[^\n]", &p[n - 1].email);
-      printf("Digite seu telfone: ");
-      scanf(" %[^\n]", &p[n - 1].telefone);
-      printf("Digite a funcao: ");
-      scanf(" %[^\n]", &p[n - 1].funcao);
-      printf("Digite o setor: ");
-      scanf(" %[^\n]", &p[n - 1].setor);
-
-      int valCPF = verificadorCPF(&p[n - 1].CPF);
-
-      while(valCPF == 2){
-        printf("Digite seu CPF: ");
-        scanf(" %[^\n]", &p[n - 1].CPF);
-        valCPF = verificadorCPF(&p[n - 1].CPF);
-        if(valCPF == 1){
-          valCPF = 1;
-        } else {
-          valCPF = 2;
-        }
-      }
-    
-      *n_pessoa = n;
-    
-      return p;
-    }
-
-  }
-
-  while (valID == 0){
-    printf("Digite o id: ");
-    scanf("%d", &id);
-
-    if(id == 0){
-      p = (Pessoa*) realloc(p, n * sizeof(Pessoa));
-      return p;
-      break;
-    } else {
-      printf("este aqui n = %d", n);
-      system("pause");
-      val = validarID(n, id, p); //problema aqui?
-      
-      if(val >= 1){
-        n++;
-        valID = 1;
-      } else {
-        printf("Id de pessoa ja cadastrada!\n");
-        system("pause");
-        valID = 0;
-      }
-    }
-
-  }
-
-  printf("cucucu %d !\n", n);
-  system("pause");
-  p = (Pessoa*) realloc(p, n * sizeof(Pessoa));
-  
-  p[n - 1].id_pessoa = id;
-  printf("Digite o nome: ");
-  scanf(" %[^\n]", &p[n - 1].nome);
-  printf("Digite seu CPF: ");
-  scanf(" %[^\n]", &p[n - 1].CPF);
-  printf("Digite seu e-mail: ");
-  scanf(" %[^\n]", &p[n - 1].email);
-  printf("Digite seu telfone: ");
-  scanf(" %[^\n]", &p[n - 1].telefone);
-  printf("Digite a funcao: ");
-  scanf(" %[^\n]", &p[n - 1].funcao);
-  printf("Digite o setor: ");
-  scanf(" %[^\n]", &p[n - 1].setor);
-
-  int valCPF = verificadorCPF(&p[n].CPF);
-
-  while(valCPF == 2){
-    printf("Digite seu CPF: ");
-    scanf(" %[^\n]", &p[n].CPF);
-    valCPF = verificadorCPF(&p[n - 1].CPF);
-    if(valCPF == 1){
-      valCPF = 1;
-    } else {
-      valCPF = 2;
+  for(i = 0; i < n_pessoa; i++){
+    if(id_digitado == pessoa[i].id_pessoa){
+      return 0; break;
     }
   }
 
-
-  *n_pessoa = n;
-  ordenarCadastro(p, n - 1 , 0, arquivo);
-
-  return p;
-  
-}
-
-int excluirCadastro(Pessoa *p, FILE *arquivo, int n_pessoa, int *n){
-
-  arquivo = fopen("funcionarios.txt", "r+");
-
-  if(arquivo == NULL){
-    printf("Erro ao abrir arquivo\n");
-    system("exit");
-  }
-
-  int id, valID = 0, val = 0;
-
-  while (valID == 0){
-    printf("Informe o id do cadastro: ");
-    scanf("%d", &id);
-
-    val = validarID(n_pessoa, id, p);
-
-    if(val >= 1){
-      printf("Id de pessoa nao cadastrada!\n");
-      system("pause");
-      valID = 0;
-    } else {
-      valID = 1;
-    }
-  }
-
-  if(valID >= 1){
-
-    int i, j;
-
-    for(int i = 0; i < n_pessoa; i++){
-      if(id == p[i].id_pessoa){
-        j = i;
-        break;
-      }
-    }
-
-    char caracter;
-
-    printf("Informacoes do cadastro:\n");
-    printf("ID: %d\n", p[j].id_pessoa);
-    printf("nome: %s\n", p[j].nome);
-    printf("CPF: %s\n", p[j].CPF);
-    printf("E-mail: %s\n", p[j].email);
-    printf("Telefone: %s\n", p[j].telefone);
-    printf("Funcao: %s\n", p[j].funcao);
-    printf("Setor: %s\n", p[j].setor);
-    printf("Dejesa mesmo excluir este cadastro? (S/N): ");
-    scanf(" %c", &caracter);
-
-    if(tolower(caracter) == 's') {
-      for(j = j; j < n_pessoa - 1; j++){
-        p[j].id_pessoa = p[j + 1].id_pessoa;
-        strncpy(p[j].nome, p[j + 1].nome, sizeof(p[j + 1].nome));
-        strncpy(p[j].CPF, p[j + 1].CPF, sizeof(p[j + 1].CPF));
-        strncpy(p[j].email, p[j + 1].email, sizeof(p[j + 1].email));
-        strncpy(p[j].telefone, p[j + 1].telefone, sizeof(p[j + 1].telefone));
-        strncpy(p[j].funcao, p[j + 1].funcao, sizeof(p[j + 1].funcao));
-        strncpy(p[j].setor, p[j + 1].setor, sizeof(p[j + 1].setor));
-      } 
-
-
-      p = (Pessoa*) realloc(p, --n_pessoa * sizeof(Pessoa));
-      *n = n_pessoa;
-      
-      return p;
-
-    } else {
-      p = (Pessoa*) realloc(p, n_pessoa * sizeof(Pessoa));
-      *n = n_pessoa++;
-      return p;
-    }
-
-  }
+  return 1;
 
 }
 
-void cadastroInformacao(Pessoa *p, int n){
-
-  int menu, i, id;
-
-  while (menu != 0){
-    system("cls");
-    printf("**************************************************\n");
-    printf("*                                                *\n");
-    printf("*                 Informacao                     *\n");
-    printf("*                                                *\n");
-    printf("**************************************************\n");
-    printf("*                                                *\n");
-    printf("*     0 - Menu principal                         *\n");
-    printf("*     1 - Listar todos os cadastros              *\n");
-    printf("*     2 - Listar apenas um                       *\n");
-    printf("*                                                *\n");
-    printf("**************************************************\n");
-    printf("Digite a opcao: ");
-    scanf("%d", &menu);
-
-    if(menu < 0 || menu > 2){
-      system("cls");
-      printf("Opcao invalida!\n");
-      system("pause");
-    }
-
-    switch (menu){
-      case 0:
-        return;
-        break;
-
-      case 1:
-        system("cls");
-        printf("**************************************************\n");
-        printf("*                                                *\n");
-        printf("*                 Informacao                     *\n");
-        printf("*                                                *\n");
-        printf("**************************************************\n");
-        for(i = 0; i < n; i++){
-          printf("ID: %d\n", p[i].id_pessoa);
-          printf("nome: %s\n", p[i].nome);
-          printf("CPF: %s\n", p[i].CPF);
-          printf("E-mail: %s\n", p[i].email);
-          printf("Telefone: %s\n", p[i].telefone);
-          printf("Funcao: %s\n", p[i].funcao);
-          printf("Setor: %s\n\n", p[i].setor);
-        }
-        system("pause");
-        break;
-
-      case 2:
-        printf("Digite o id da pessoa: ");
-        scanf("%d", &id);
-
-        system("cls");
-        printf("**************************************************\n");
-        printf("*                                                *\n");
-        printf("*                 Informacao                     *\n");
-        printf("*                                                *\n");
-        printf("**************************************************\n");
-
-        for(int i = 0; i < n; i++){
-          if(id == p[i].id_pessoa) {
-            printf("ID: %d\n", p[i].id_pessoa);
-            printf("nome: %s\n", p[i].nome);
-            printf("CPF: %s\n", p[i].CPF);
-            printf("E-mail: %s\n", p[i].email);
-            printf("Telefone: %s\n", p[i].telefone);
-            printf("Funcao: %s\n", p[i].funcao);
-            printf("Setor: %s\n", p[i].setor);
-          }
-        }
-
-        system("pause");
-        break;
-    }
-
-  }
-
-}
-
-int ordenarCadastro(Pessoa *p, int n_fim, int n_inicio, FILE *arquivo){
+int ordenarCadastros(Pessoa *p, int n_fim, int n_inicio){
 
   typedef struct{
     int id_pessoa;
-    char nome[100];
+    char nome[70];
     char CPF[15];
-    char email[100];
+    char email[70];
     char telefone[15];
     char funcao[30];
     char setor[30];
@@ -431,8 +216,8 @@ int ordenarCadastro(Pessoa *p, int n_fim, int n_inicio, FILE *arquivo){
   if(n_inicio == n_fim) return;
   metTam = (n_inicio + n_fim) / 2;
 
-  ordenarCadastro(p, n_inicio, metTam, arquivo);
-  ordenarCadastro(p, metTam + 1, n_fim, arquivo);
+  ordenarCadastros(p, n_inicio, metTam);
+  ordenarCadastros(p, metTam + 1, n_fim);
   i = n_inicio;
   j = metTam + 1;
   k = 0;
@@ -502,159 +287,635 @@ int ordenarCadastro(Pessoa *p, int n_fim, int n_inicio, FILE *arquivo){
 
 }
 
-void imprimirOrdenacao(Pessoa *p, FILE *arquivo, int n_pessoa){
+void imprimirOrdenacao(Pessoa *pessoa, FILE *arquivo, int n_pessoa){
 
   arquivo = fopen("funcionarios.txt", "w+");
 
   if(arquivo == NULL){
-    printf("Erro ao abrir arquivo\n");
-    system("exit");
+    printf("Erro ao abrir arquivo\n"); return;
   }
 
-  fseek(arquivo, 0, SEEK_END);
+  fseek(arquivo, 0, SEEK_SET);
 
   for(int i = 0; i < n_pessoa; i++){
-    fprintf(arquivo, "id: %d\n", p[i].id_pessoa);
-    fprintf(arquivo, "nome: %s\n", p[i].nome);
-    fprintf(arquivo, "CPF: %s\n", p[i].CPF);
-    fprintf(arquivo, "email: %s\n", p[i].email);
-    fprintf(arquivo, "telefone: %s\n", p[i].telefone);
-    fprintf(arquivo, "funcao: %s\n", p[i].funcao);
+    fprintf(arquivo, "ID: %d\n", pessoa[i].id_pessoa);
+    fprintf(arquivo, "Nome: %s\n", pessoa[i].nome);
+    fprintf(arquivo, "CPF: %s\n", pessoa[i].CPF);
+    fprintf(arquivo, "E-mail: %s\n", pessoa[i].email);
+    fprintf(arquivo, "Telefone: %s\n", pessoa[i].telefone);
+    fprintf(arquivo, "Função: %s\n", pessoa[i].funcao);
     if(i != (n_pessoa - 1)){
-      fprintf(arquivo, "setor: %s\n\n", p[i].setor);
+      fprintf(arquivo, "Setor: %s\n\n", pessoa[i].setor);
     } else {
-      fprintf(arquivo, "setor: %s\n", p[i].setor);
+      fprintf(arquivo, "Setor: %s\n", pessoa[i].setor);
     }
   }
 
   if(fclose(arquivo) != 0) {
-    printf("Erro ao fechar arquivo\n");
-    system("exit");
-  }
-
-}
-
-int lerArquivo(FILE *arquivo, Pessoa *p, int n_pessoa, int *n){
-
-  arquivo = fopen("funcionarios.txt", "r");
-
-  if(arquivo == NULL){
-    printf("Erro ao abrir arquivo\n");
-    return;
-  }
-
-  char caracter;
-  fscanf(arquivo, "%c", &caracter);
-  fseek(arquivo, -1, SEEK_CUR);
-
-  if(caracter == NULL){
-    *n = 0;
-    return p;
-  } else {
-    while(fgetc(arquivo) != EOF){
-      
-      fseek(arquivo, -1, SEEK_CUR);
-
-      p = (Pessoa*) realloc(p, ++n_pessoa * sizeof(Pessoa));
-      fscanf(arquivo, "id: %d\n", &p[n_pessoa - 1].id_pessoa);
-      fscanf(arquivo, "nome: %[^\n]\n", &p[n_pessoa - 1].nome);
-      fscanf(arquivo, "CPF: %[^\n]\n", &p[n_pessoa - 1].CPF);
-      fscanf(arquivo, "email: %[^\n]\n", &p[n_pessoa - 1].email);
-      fscanf(arquivo, "telefone: %[^\n]\n", &p[n_pessoa - 1].telefone);
-      fscanf(arquivo, "funcao: %[^\n]\n", &p[n_pessoa - 1].funcao);
-      fscanf(arquivo, "setor: %[^\n]\n", &p[n_pessoa - 1].setor);
-    }
-
-      if(fclose(arquivo) != 0) {
-        printf("Erro ao fechar arquivo\n");
-        system("exit");
-      }
-      
-      p = ordenarCadastro(p, n_pessoa - 1, 0, arquivo);
-      
-      *n = n_pessoa;
-      printf("essa buceta? n = %d", *n);
-      system("pause");
-
-      return p;
+    printf("Erro ao fechar arquivo\n"); return;
   }
   
 }
 
-int main() {
+int novoCadastro(Pessoa *pessoa, int n_pessoa, int *n_pessoa_fim){
+
+  int menu = 1, valID = 0, valCPF = 0, id;
+  
+  while(menu != 0){
+
+    menu1:
+
+    system("cls"); printCadastro(); printf("\n        Digite a opção: ");
+    scanf("%d", &menu);
+
+    if(menu < 0 || menu > 1){
+      printf("\n        Opção inválida!\n\n"); system("cls");
+      goto menu1;
+    }
+
+    switch(menu){
+
+      case 0: goto exit;
+      break;
+
+      case 1: goto cadastro;
+      break;
+
+    }
+
+  }
+
+  cadastro:
+
+  while(valID == 0){
+    system("cls"); printCadastro();
+    
+    printf("\n        Digite o ID: ");
+    scanf("%d", &id);
+
+    if(id == 0)
+      goto exit;
+
+    valID = verificarID(pessoa, id, n_pessoa);
+
+    if(valID == 0){
+      printf("        ID já cadastrado! Tente novamente...\n\n"); system("        pause");
+    }
+  }
+
+  if(valID == 1){
+
+    pessoa = (Pessoa*) realloc(pessoa, ++n_pessoa * sizeof(Pessoa));
+
+    pessoa[n_pessoa - 1].id_pessoa = id;
+    
+    printf("        Digite o nome: ");
+    scanf(" %[^\n]", &pessoa[n_pessoa - 1].nome);
+    printf("        Digite o CPF: ");
+    scanf(" %[^\n]", &pessoa[n_pessoa - 1].CPF);
+    printf("        Digite o E-mail: ");
+    scanf(" %[^\n]", &pessoa[n_pessoa - 1].email);
+    printf("        Digite o Telefone: ");
+    scanf(" %[^\n]", &pessoa[n_pessoa - 1].telefone);
+    printf("        Digite o Função: ");
+    scanf(" %[^\n]", &pessoa[n_pessoa - 1].funcao);
+    printf("        Digite o Setor: ");
+    scanf(" %[^\n]", &pessoa[n_pessoa - 1].setor); printf("\n");
+
+    valCPF = verificarCPF(&pessoa[n_pessoa - 1].CPF);
+
+    while(valCPF == 0){
+      
+      system("cls"); printCadastro();
+      printf("\n        Digite o CPF: ");
+      scanf(" %[^\n]", &pessoa[n_pessoa - 1].CPF);
+
+      valCPF = verificarCPF(&pessoa[n_pessoa - 1].CPF);
+    }
+
+    goto exit;
+
+  }
+
+  exit:
+  *n_pessoa_fim = n_pessoa;
+  return pessoa;
+
+}
+
+int excluirCadastro(Pessoa *pessoa, int n_pessoa, int *n_pessoa_fim){
+
+  int menu = 1, id, valID = 1;
+
+  while(menu != 0){
+
+    menu2:
+    
+    system("cls"); printExcluir(); printf("\n        Digite a opção: ");
+    scanf("%d", &menu);
+
+    if(menu < 0 || menu > 1){
+      printf("\n        Opção inválida!\n\n"); system("pause");
+      goto menu2;
+    }
+
+    switch(menu){
+
+      case 0: goto exit1;
+      break;
+
+      case 1: goto excluir;
+      break;
+
+    }
+
+  }
+
+  excluir:
+  while(valID == 1){
+    
+    system("cls"); printExcluir();
+    printf("\n        Informe o ID do cadastro: ");
+    scanf("%d", &id);
+
+    if(id == 0)
+      goto exit1;
+
+    valID = verificarID(pessoa, id, n_pessoa);
+
+    if(valID == 1){
+      printf("\n        ID não cadastrado! Tente novamente...\n\n"); system("        pause");
+    }
+
+    valID = verificarID(pessoa, id, n_pessoa);
+
+  }
+
+  int i;
+
+  for(i = 0; i < n_pessoa; i++){
+    if(id == pessoa[i].id_pessoa){
+      break;
+    }
+  }
+
+  system("cls"); printExcluir(); printf("\n");
+  printf("        Informações do cadastro:\n\n");
+  printf("        ID: %d\n", pessoa[i].id_pessoa);
+  printf("        Nome: %s\n", pessoa[i].nome);
+  printf("        CPF: %s\n", pessoa[i].CPF);
+  printf("        E-mail: %s\n", pessoa[i].email);
+  printf("        Telefone: %s\n", pessoa[i].telefone);
+  printf("        Função: %s\n", pessoa[i].funcao);
+  printf("        Setor: %s\n\n", pessoa[i].setor);
+
+  char caracterR;
+ 
+  printf("        Deseja continuar com a exclusão do cadastro (S/N)? ");
+  scanf(" %c", &caracterR); printf("\n");
+
+  if(toupper(caracterR) == 'N'){
+    system("cls"); printExcluir();
+    printf("\n        Excluir cadastro ID número [%d] cancelado\n\n", id); system("pause");
+    goto exit1;
+  } else {
+
+    for(i = i; i < n_pessoa - 1; i++){
+      pessoa[i].id_pessoa = pessoa[i + 1].id_pessoa;
+      strncpy(pessoa[i].nome, pessoa[i + 1].nome, sizeof(pessoa[i + 1].nome));
+      strncpy(pessoa[i].CPF, pessoa[i + 1].CPF, sizeof(pessoa[i + 1].CPF));
+      strncpy(pessoa[i].email, pessoa[i + 1].email, sizeof(pessoa[i + 1].email));
+      strncpy(pessoa[i].telefone, pessoa[i + 1].telefone, sizeof(pessoa[i + 1].telefone));
+      strncpy(pessoa[i].funcao, pessoa[i + 1].funcao, sizeof(pessoa[i + 1].funcao));
+      strncpy(pessoa[i].setor, pessoa[i + 1].setor, sizeof(pessoa[i + 1].setor));
+    }
+
+    pessoa = (Pessoa*) realloc(pessoa, --n_pessoa * sizeof(Pessoa));
+    *n_pessoa_fim = n_pessoa;
+
+    system("cls"); printExcluir();
+    printf("\n        Cadastro ID número [%d] excluído com sucesso!\n\n", id); system("pause");
+
+    return pessoa;
+    
+  }
+    
+  exit1: return pessoa;
+
+}
+
+int atualizarCadastro(Pessoa *pessoa, int n_pessoa){
+
+  int menu = 1, i, id, valID = 1, opcao;
+  
+  char email[70];
+  char telefone[15];
+  char funcao[30];
+  char setor[30];
+
+  while(menu != 0){
+
+    menu3:
+    
+    system("cls"); printAtualizar(); printf("\n        Digite a opção: ");
+    scanf("%d", &menu);
+
+    if(menu < 0 || menu > 1){
+      printf("\n        Opção inválida!\n\n"); system("pause");
+      goto menu3;
+    }
+
+    switch(menu){
+
+      case 0: goto exit4;
+      break;
+
+      case 1: goto atualizar;
+      break;
+
+    }
+
+  }
+
+  atualizar:
+  while(valID == 1){
+
+    system("cls"); printAtualizar();
+    printf("\n        Informe o ID do cadastro: ");
+    scanf("%d", &id);
+
+    if(id == 0)
+      goto exit4;
+
+    valID = verificarID(pessoa, id, n_pessoa);
+
+    if(valID == 1){
+      printf("\n        ID não cadastrado! Tente novamente...\n\n"); system("pause");
+    }
+
+    valID = verificarID(pessoa, id, n_pessoa);
+
+  }
+
+  if(valID == 0){
+
+    for(i = 0; i < n_pessoa; i++){
+      if(id == pessoa[i].id_pessoa){
+        break;
+      }
+    }
+
+    system("cls");
+    borda(100); vazio(); seletoresInicio(38);
+    printf("ATUALIZAR CADASTRO                                        ██\n");
+    vazio();borda(100); vazio(); seletoresInicio(5);
+    printf("1 - Alterar E-mail                                                                         ██\n");
+    seletoresInicio(5);
+    printf("2 - Alterar Telefone                                                                       ██\n");
+    seletoresInicio(5);
+    printf("3 - Alterar Função                                                                         ██\n");
+    seletoresInicio(5);
+    printf("4 - Alterar Setor                                                                          ██\n");
+    vazio(); borda(100);
+    printf("\n        Digite a opção: ");
+    scanf("%d", &opcao);
+
+    system("cls");
+    borda(100); vazio(); seletoresInicio(38);
+    printf("ATUALIZAR CADASTRO                                        ██\n");
+    vazio();borda(100); 
+
+    switch(opcao){
+
+
+      case 1:
+      printf("\n        Digite o E-mail: ");
+      scanf(" %[^\n]", &email);
+      strncpy(pessoa[i].email, email, sizeof(email));
+      break;
+
+      case 2:
+      printf("\n        Digite o Telefone: ");
+      scanf(" %[^\n]", &telefone);
+      strncpy(pessoa[i].telefone, telefone, sizeof(telefone));
+      break;
+
+      case 3:
+      printf("\n        Digite o Função: ");
+      scanf(" %[^\n]", &funcao);
+      strncpy(pessoa[i].funcao, funcao, sizeof(funcao));
+      break;
+
+      case 4:
+      printf("\n        Digite o Setor: ");
+      scanf(" %[^\n]", &setor);
+      strncpy(pessoa[i].setor, setor, sizeof(setor));
+      break;
+    
+    }
+    
+    goto exit4;
+
+  }
+
+  exit4:
+  return pessoa;
+
+}
+
+void informacaoCadastro(Pessoa *pessoa, int n_pessoa){
+
+  int menu = 1, i, id, valID = 1, inicio, fim, valMin = 0, valMax = 0;
+
+  while(menu != 0){
+
+    menu2:
+    
+    system("cls"); printInformacao(); printf("\n        Digite a opção: ");
+    scanf("%d", &menu);
+
+    if(menu < 0 || menu > 3){
+      printf("\n        Opção inválida!\n\n"); system("pause");
+      goto menu2;
+    }
+
+    switch(menu){
+
+      case 0: goto exit3;
+      break;
+
+      case 1: goto todos;
+      break;
+
+      case 2: goto um;
+      break;
+
+      case 3: goto intervalo;
+      break;
+
+    }
+
+  }
+
+  borda(100); vazio(); seletoresInicio(40);
+  printf("INFORMAÇÃO                                              ██\n");
+  vazio(); borda(100);
+
+  todos:
+  printf("\n        Informações dos cadastros:\n\n");
+  for(i = 0; i < n_pessoa; i++){
+    printf("        ID: %d\n", pessoa[i].id_pessoa);
+    printf("        Nome: %s\n", pessoa[i].nome);
+    printf("        CPF: %s\n", pessoa[i].CPF);
+    printf("        E-mail: %s\n", pessoa[i].email);
+    printf("        Telefone: %s\n", pessoa[i].telefone);
+    printf("        Função: %s\n", pessoa[i].funcao);
+    printf("        Setor: %s\n\n", pessoa[i].setor); 
+  }
+  system("pause");
+  goto exit3;
+
+  um:
+  while(valID == 1){
+
+    printf("\n        Informe o ID do cadastro: ");
+    scanf("%d", &id);
+
+    if(id == 0)
+      goto exit3;
+
+    valID = verificarID(pessoa, id, n_pessoa);
+
+    if(valID == 1){
+      printf("\n\n        ID não cadastrado! Tente novamente...\n"); system("pause");
+    }
+
+    valID = verificarID(pessoa, id, n_pessoa);
+
+  }
+
+  if(valID == 0){
+    for(i = 0; i < n_pessoa; i++){
+      if(id == pessoa[i].id_pessoa){
+        break;
+      }
+    }
+
+    system("cls"); borda(100); vazio(); seletoresInicio(40);
+    printf("INFORMAÇÃO                                              ██\n");
+    vazio(); borda(100);
+
+    printf("\n        Informações do cadastro:\n\n");
+    printf("        ID: %d\n", pessoa[i].id_pessoa);
+    printf("        Nome: %s\n", pessoa[i].nome);
+    printf("        CPF: %s\n", pessoa[i].CPF);
+    printf("        E-mail: %s\n", pessoa[i].email);
+    printf("        Telefone: %s\n", pessoa[i].telefone);
+    printf("        Função: %s\n", pessoa[i].funcao);
+    printf("        Setor: %s\n\n", pessoa[i].setor);
+    system("        pause");
+
+    goto exit3;
+    
+  }
+
+  intervalo:
+  while(valMin == 0 && valMax == 0){
+
+    inicio:
+    system("cls"); borda(100); vazio(); seletoresInicio(40);
+    printf("INFORMAÇÃO                                              ██\n");
+    vazio(); borda(100);
+
+    printf("\n        Total cadastros: [%d]\n", n_pessoa);
+    printf("\n        Mínimo: [%d] | Máximo: [%d]\n", 1, n_pessoa);
+
+    printf("        Informe o começo do intervalo: ");
+    scanf("%d", &inicio);
+
+    if(inicio - 1 < 1){
+      printf("\n        O valor do início não pode ser menor que o mínimo!\n"); system("pause");
+      goto inicio;
+    }
+    if(inicio > n_pessoa){
+      printf("\n        O valor do início não pode ultrapassar do valor máximo!\n"); system("pause");
+      goto inicio;
+    }
+
+    fim:
+    system("cls"); borda(100); vazio(); seletoresInicio(40);
+    printf("INFORMAÇÃO                                              ██\n");
+    vazio(); borda(100);
+
+    printf("\n        Total cadastros: [%d]\n", n_pessoa);
+    printf("\n        Mínimo: [%d] | Máximo: [%d]\n", 1, n_pessoa);
+    printf("        Valor mínimo digitado: [%d]\n", inicio);
+
+    printf("\n        Informe o final do intervalo: ");
+    scanf("%d", &fim);
+
+    if(fim - 1 > n_pessoa - 1){
+      printf("\n        O valor do final não pode ultrapassar o valor máximo!\n"); system("pause");
+      goto fim;
+    }
+    if(fim < inicio){
+      printf("\n        O valor do final não pode ser menor que o valor mínimo digitado!\n"); system("pause");
+      goto fim;
+    }
+
+    valMin = 1; valMax = 1;
+
+  }
+
+  system("cls"); borda(100); vazio(); seletoresInicio(40);
+  printf("INFORMAÇÃO                                              ██\n");
+  vazio(); borda(100);
+
+  if(valMin == 1 && valMax == 1){
+    if(inicio == fim){
+      printf("\n        Informações do cadastro:\n\n");
+      printf("        ID: %d\n", pessoa[inicio - 1].id_pessoa);
+      printf("        Nome: %s\n", pessoa[inicio - 1].nome);
+      printf("        CPF: %s\n", pessoa[inicio - 1].CPF);
+      printf("        E-mail: %s\n", pessoa[inicio - 1].email);
+      printf("        Telefone: %s\n", pessoa[inicio - 1].telefone);
+      printf("        Função: %s\n", pessoa[inicio - 1].funcao);
+      printf("        Setor: %s\n\n", pessoa[inicio - 1].setor);
+      system("pause");
+      goto exit3;
+    }
+
+    printf("\n        Informações dos cadastros:\n\n");
+    for(i = inicio - 1; i < fim; i++){
+      printf("        ID: %d\n", pessoa[i].id_pessoa);
+      printf("        Nome: %s\n", pessoa[i].nome);
+      printf("        CPF: %s\n", pessoa[i].CPF);
+      printf("        E-mail: %s\n", pessoa[i].email);
+      printf("        Telefone: %s\n", pessoa[i].telefone);
+      printf("        Função: %s\n", pessoa[i].funcao);
+      printf("        Setor: %s\n\n", pessoa[i].setor);
+    }
+    system("pause");
+    goto exit3;
+  }
+
+  exit3: return;
+
+}
+
+void main(){
+
+  UINT CPAGE_UTF8 = 65001;
+  UINT CPAGE_DEFAULT = GetConsoleOutputCP();
+
+  SetConsoleOutputCP(CPAGE_UTF8);
 
   FILE *arquivo;
- 
+
   Pessoa *pessoa;
   pessoa = (Pessoa*) malloc(0 * sizeof(Pessoa));
 
-  
   if(pessoa == NULL){
-    printf("Erro de alocacao de memoria!\n");
-    return 1;
+    printf("Erro de alocação de memória!\n"); return;
   }
 
-  int menu = 1, n_pessoa = 0, aux;
+  int menu = 1, n_pessoa = 0;
+  char caracter;
 
-  pessoa = lerArquivo(arquivo, pessoa, n_pessoa, &n_pessoa);
-  printf("n_pessoa main = %d", n_pessoa);
-  system("pause");
+  arquivo = fopen("funcionarios.txt", "a+");
 
-  while (menu != 0){
-    system("cls");
-    printMenu();
+  if(arquivo == NULL){
+    printf("Erro ao abrir aquivo!\n"); return;
+  }
+
+  if(fgets(&caracter, 0, arquivo) == NULL){
+
+    int verificacao;
+
+    fseek(arquivo, 0, SEEK_SET);
+    fscanf(arquivo, "ID: %d", &verificacao);
+
+    if(verificacao > 0)
+      goto ler;
+
+    n_pessoa = 0;
+
+  } else {
+
+    ler:
+
+    fseek(arquivo, 0, SEEK_SET);
+
+    while(fgetc(arquivo) != EOF){
+
+      fseek(arquivo, -1, SEEK_CUR);
+
+      pessoa = (Pessoa*) realloc(pessoa, ++n_pessoa * sizeof(Pessoa));
+
+      fscanf(arquivo, "ID: %d\n", &pessoa[n_pessoa - 1].id_pessoa);
+      fscanf(arquivo, "Nome: %[^\n]\n", &pessoa[n_pessoa - 1].nome);
+      fscanf(arquivo, "CPF: %[^\n]\n", &pessoa[n_pessoa - 1].CPF);
+      fscanf(arquivo, "E-mail: %[^\n]\n", &pessoa[n_pessoa - 1].email);
+      fscanf(arquivo, "Telefone: %[^\n]\n", &pessoa[n_pessoa - 1].telefone);
+      fscanf(arquivo, "Função: %[^\n]\n", &pessoa[n_pessoa - 1].funcao);
+      fscanf(arquivo, "Setor: %[^\n]\n", &pessoa[n_pessoa - 1].setor);
+      
+    }
+
+    if(fclose(arquivo) != 0){
+      printf("Erro ao fechar o arquivo!\n");
+      return;
+    }
+
+    if(n_pessoa > 1){
+      pessoa = ordenarCadastros(pessoa, n_pessoa - 1, 0);
+      imprimirOrdenacao(pessoa, arquivo, n_pessoa);
+    }
+    
+  }
+
+  while(menu != 0){
+
+    menu:
+
+    system("cls"); printMenu();
     scanf("%d", &menu);
 
-    if(menu < 0 || menu > 6){
-      system("cls");
-      printf("Opcao invalida!\n");
-      system("pause");
+    if(menu < 0 || menu > 4){
+      printf("\n        Opção inválida!\n"); system("pause");
+      goto menu;
     }
 
-    switch (menu){
+    switch(menu){
+
       case 1:
-      pessoa = novoCadastro(n_pessoa, pessoa, arquivo, &n_pessoa);
+      pessoa = novoCadastro(pessoa, n_pessoa, &n_pessoa);
+      if(n_pessoa > 1){
+        pessoa = ordenarCadastros(pessoa, n_pessoa - 1, 0);
+      }
+      imprimirOrdenacao(pessoa, arquivo, n_pessoa);
+      
+      break;
+
+      case 2:
+      pessoa = excluirCadastro(pessoa, n_pessoa, &n_pessoa);
       imprimirOrdenacao(pessoa, arquivo, n_pessoa);
       break;
-      
-      case 2:
-      if(n_pessoa > 0){
-        aux = n_pessoa;
-        pessoa = excluirCadastro(pessoa, arquivo, n_pessoa, &n_pessoa);
-        n_pessoa--;
-        if(aux > n_pessoa)
-          n_pessoa++;
-        imprimirOrdenacao(pessoa, arquivo, n_pessoa);
-        break;
-      } else {
-        printf("Nenhum cadastro no banco de dados!\n");
-        printf("Faca um cadastro antes usando a opcao 1\n");
-        system("pause");
-        break;
-      }
 
-      /*case 3: atualizarCadastro();
-      break;*/
-
-      case 4:
-      if(n_pessoa > 0) {
-        cadastroInformacao(pessoa, n_pessoa);
-      } else {
-        printf("Nenhum cadastro no banco de dados!\n");
-        printf("Faca um cadastro antes usando a opcao 1\n");
-        system("pause");
-        break;
-      }
-
-      /*case 5: recrutamentoSelecao();
+      case 3:
+      pessoa = atualizarCadastro(pessoa, n_pessoa);
+      imprimirOrdenacao(pessoa, arquivo, n_pessoa);
       break;
 
-      case 5: pontoControle();
-      break;*/
+      case 4:
+      informacaoCadastro(pessoa, n_pessoa);
+      break;
+
     }
+
   }
-  
+
   free(pessoa);
-  printf("n_pessoa: [%d]", n_pessoa);
-  return 0;
+  return;
+  
 }

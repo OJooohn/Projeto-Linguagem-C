@@ -1,7 +1,39 @@
-id: 1
-nome: a
-CPF: 11171066910
-email: b
-telefone: c
-funcao: d
-setor: e
+ID: 16
+Nome: Dayane Dias
+CPF: 977.557.459-53
+E-mail: day@gmail.com
+Telefone: 90990-5647
+Função: programadora
+Setor: back-end
+
+ID: 22
+Nome: Thiago Gallotti
+CPF: 873.385.020-80
+E-mail: thiagogallotti@gmail.com
+Telefone: 41 94367-2376
+Função: contabilidade
+Setor: financeiro
+
+ID: 23
+Nome: Eduardo Woz
+CPF: 197.132.430-21
+E-mail: edu@gmail.com
+Telefone: 92387-3349
+Função: professor
+Setor: ciencia da computacao
+
+ID: 31
+Nome: John Chappell
+CPF: 111.710.669-10
+E-mail: john@gmail.com
+Telefone: 41 9914949-38
+Função: programador
+Setor: front-end
+
+ID: 33
+Nome: Thyago de Melo
+CPF: 630.955.460-33
+E-mail: thyagodemelo33@gmail.com
+Telefone: 41 93033-0330
+Função: mecanico
+Setor: manutencao

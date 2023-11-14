@@ -1,39 +1,39 @@
-id: 16
-nome: Dayane Dias
+ID: 16
+Nome: Dayane Dias
 CPF: 977.557.459-53
-email: day@gmail.com
-telefone: 90990-5647
-funcao: programadora
-setor: back-end
+E-mail: day@gmail.com
+Telefone: 90990-5647
+Função: programadora
+Setor: back-end
 
-id: 22
-nome: Thiago Gallotti
+ID: 22
+Nome: Thiago Gallotti
 CPF: 873.385.020-80
-email: thiagogallotti@gmail.com
-telefone: 41 94367-2376
-funcao: contabilidade
-setor: financeiro
+E-mail: thiagogallotti@gmail.com
+Telefone: 41 94367-2376
+Função: contabilidade
+Setor: financeiro
 
-id: 23
-nome: Eduardo Woz
+ID: 23
+Nome: Eduardo Woz
 CPF: 197.132.430-21
-email: edu@gmail.com
-telefone: 92387-3349
-funcao: professor
-setor: ciencia da computacao
+E-mail: edu@gmail.com
+Telefone: 92387-3349
+Função: professor
+Setor: ciencia da computacao
 
-id: 31
-nome: John Chappell
+ID: 31
+Nome: John Chappell
 CPF: 111.710.669-10
-email: john@gmail.com
-telefone: 41 9914949-38
-funcao: programador
-setor: front-end
+E-mail: john@gmail.com
+Telefone: 41 9914949-38
+Função: programador
+Setor: front-end
 
-id: 33
-nome: Thyago de Melo
+ID: 33
+Nome: Thyago de Melo
 CPF: 630.955.460-33
-email: thyagodemelo33@gmail.com
-telefone: 41 93033-0330
-funcao: mecanico
-setor: manutencao
+E-mail: thyagodemelo33@gmail.com
+Telefone: 41 93033-0330
+Função: mecanico
+Setor: manutencao
