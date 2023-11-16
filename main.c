@@ -87,7 +87,9 @@ void printInformacao(){
   seletoresInicio(5);
   printf("2 - Listar somente [ID] cadastro                                                           ██\n");
   seletoresInicio(5);
-  printf("3 - Listar intervalo de cadastros                                                          ██\n");
+  printf("3 - Listar [ID] cadastro por CPF                                                           ██\n");
+  seletoresInicio(5);
+  printf("4 - Listar intervalo de cadastros                                                          ██\n");
   vazio(); borda(100);
 }
 
@@ -629,7 +631,8 @@ int atualizarCadastro(Pessoa *pessoa, int n_pessoa){
 
 void informacaoCadastro(Pessoa *pessoa, int n_pessoa){
 
-  int menu = 1, i, id, valID = 1, inicio, fim, valMin = 0, valMax = 0;
+  int menu = 1, i, j, id, valID = 1, inicio, fim, valMin = 0, valMax = 0, valCPF = 0;
+  char CPF[15], padrao[15];
 
   while(menu != 0){
 
@@ -638,7 +641,7 @@ void informacaoCadastro(Pessoa *pessoa, int n_pessoa){
     system("cls"); printInformacao(); printf("\n        Digite a opção: ");
     scanf("%d", &menu);
 
-    if(menu < 0 || menu > 3){
+    if(menu < 0 || menu > 4){
       printf(ANSI_COLOR_RED  "\n        Opção inválida!\n\n" ANSI_COLOR_GRAY); system("pause");
       goto menu2;
     }
@@ -654,7 +657,10 @@ void informacaoCadastro(Pessoa *pessoa, int n_pessoa){
       case 2: goto um;
       break;
 
-      case 3: goto intervalo;
+      case 3: goto infoCPF;
+      break;
+
+      case 4: goto intervalo;
       break;
 
     }
@@ -722,6 +728,63 @@ void informacaoCadastro(Pessoa *pessoa, int n_pessoa){
     goto exit3;
     
   }
+
+  infoCPF:
+  printf("        Digite o CPF: ");
+  scanf(" %[^\n]", &CPF);
+  
+  valCPF = verificarCPF(&CPF);
+
+  while(valCPF == 0){
+    
+    system("cls"); printInformacao();
+    printf("\n        Digite o CPF: ");
+    scanf(" %[^\n]", &CPF);
+  
+    valCPF = verificarCPF(&CPF);
+  }
+
+  for(i = 0, j = 0; i < 15; i++){
+
+    if(i == 3 || i == 7){
+      padrao[i] = '.';
+      i++; j++;
+      padrao[i] = CPF[j - 1] + 48;
+    } else {
+      if(i == 11){
+        padrao[i] = '-';
+        i++; j++;
+        padrao[i] = CPF[j - 1] + 48;
+      } else {
+        padrao[i] = CPF[j] + 48;
+        j++;
+      }
+    }
+  }
+
+  padrao[14] = '\0';
+
+  for(i = 0; i < n_pessoa; i++){
+    if(strcmp(CPF, pessoa[i].CPF) == 0){
+      break;
+    }
+  }
+
+  system("cls"); borda(100); vazio(); seletoresInicio(40);
+  printf("INFORMAÇÃO                                              ██\n");
+  vazio(); borda(100);
+
+  printf("\n        Informações do cadastro:\n\n");
+  printf("        ID: %d\n", pessoa[i].id_pessoa);
+  printf("        Nome: %s\n", pessoa[i].nome);
+  printf("        CPF: %s\n", pessoa[i].CPF);
+  printf("        E-mail: %s\n", pessoa[i].email);
+  printf("        Telefone: %s\n", pessoa[i].telefone);
+  printf("        Função: %s\n", pessoa[i].funcao);
+  printf("        Setor: %s\n\n", pessoa[i].setor);
+  system("        pause");
+
+  goto exit3;
 
   intervalo:
   while(valMin == 0 && valMax == 0){
