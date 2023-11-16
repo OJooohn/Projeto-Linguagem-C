@@ -631,8 +631,8 @@ int atualizarCadastro(Pessoa *pessoa, int n_pessoa){
 
 void informacaoCadastro(Pessoa *pessoa, int n_pessoa){
 
-  int menu = 1, i, j, id, valID = 1, inicio, fim, valMin = 0, valMax = 0, valCPF = 0;
-  char CPF[15], padrao[15];
+  int menu = 1, i, id, valID = 1, inicio, fim, valMin = 0, valMax = 0, valCPF = 0;
+  char CPF[15];
 
   while(menu != 0){
 
@@ -743,26 +743,6 @@ void informacaoCadastro(Pessoa *pessoa, int n_pessoa){
   
     valCPF = verificarCPF(&CPF);
   }
-
-  for(i = 0, j = 0; i < 15; i++){
-
-    if(i == 3 || i == 7){
-      padrao[i] = '.';
-      i++; j++;
-      padrao[i] = CPF[j - 1] + 48;
-    } else {
-      if(i == 11){
-        padrao[i] = '-';
-        i++; j++;
-        padrao[i] = CPF[j - 1] + 48;
-      } else {
-        padrao[i] = CPF[j] + 48;
-        j++;
-      }
-    }
-  }
-
-  padrao[14] = '\0';
 
   for(i = 0; i < n_pessoa; i++){
     if(strcmp(CPF, pessoa[i].CPF) == 0){
