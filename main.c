@@ -4,6 +4,10 @@
 #include <string.h>
 #include <windows.h>
 
+#define ANSI_COLOR_RED      "\x1b[31m"
+#define ANSI_COLOR_GRAY     "\e[0;37m"
+#define ANSI_COLOR_GREEN    "\033[32m"
+
 void borda(int n){
   for(int i = 0; i < n + 1; i++){
     printf("█");
@@ -120,7 +124,7 @@ int verificarCPF(char *CPF_digitado){
   }
 
   if(iguais == false){
-    printf("        CPF inválido (digitos iguais)\n\n"); system("pause");
+    printf(ANSI_COLOR_RED "        CPF inválido (digitos iguais)\n\n" ANSI_COLOR_GRAY); system("pause");
     return 0;
   }
 
@@ -136,7 +140,7 @@ int verificarCPF(char *CPF_digitado){
   }
 
   if(CPF[9] != num){
-    printf("        CPF inválido!\n\n"); system("pause");
+    printf(ANSI_COLOR_RED "        CPF inválido!\n\n" ANSI_COLOR_GRAY); system("pause");
     return 0;
   }
 
@@ -152,7 +156,7 @@ int verificarCPF(char *CPF_digitado){
   }
 
   if(CPF[10] != num){
-    printf("        CPF inválido!\n\n"); system("pause");
+    printf(ANSI_COLOR_RED "        CPF inválido!\n\n" ANSI_COLOR_GRAY); system("pause");
     return 0;
   }
 
@@ -292,7 +296,7 @@ void imprimirOrdenacao(Pessoa *pessoa, FILE *arquivo, int n_pessoa){
   arquivo = fopen("funcionarios.txt", "w+");
 
   if(arquivo == NULL){
-    printf("Erro ao abrir arquivo\n"); return;
+    printf(ANSI_COLOR_RED "Erro ao abrir arquivo\n" ANSI_COLOR_GRAY); return;
   }
 
   fseek(arquivo, 0, SEEK_SET);
@@ -312,7 +316,7 @@ void imprimirOrdenacao(Pessoa *pessoa, FILE *arquivo, int n_pessoa){
   }
 
   if(fclose(arquivo) != 0) {
-    printf("Erro ao fechar arquivo\n"); return;
+    printf(ANSI_COLOR_RED "Erro ao fechar arquivo\n" ANSI_COLOR_GRAY); return;
   }
   
 }
@@ -329,7 +333,7 @@ int novoCadastro(Pessoa *pessoa, int n_pessoa, int *n_pessoa_fim){
     scanf("%d", &menu);
 
     if(menu < 0 || menu > 1){
-      printf("\n        Opção inválida!\n\n"); system("cls");
+      printf(ANSI_COLOR_RED "\n        Opção inválida!\n\n" ANSI_COLOR_GRAY); system("cls");
       goto menu1;
     }
 
@@ -359,7 +363,7 @@ int novoCadastro(Pessoa *pessoa, int n_pessoa, int *n_pessoa_fim){
     valID = verificarID(pessoa, id, n_pessoa);
 
     if(valID == 0){
-      printf("        ID já cadastrado! Tente novamente...\n\n"); system("        pause");
+      printf(ANSI_COLOR_RED "        ID já cadastrado! Tente novamente...\n\n" ANSI_COLOR_GRAY); system("        pause");
     }
   }
 
@@ -415,7 +419,7 @@ int excluirCadastro(Pessoa *pessoa, int n_pessoa, int *n_pessoa_fim){
     scanf("%d", &menu);
 
     if(menu < 0 || menu > 1){
-      printf("\n        Opção inválida!\n\n"); system("pause");
+      printf(ANSI_COLOR_RED "\n        Opção inválida!\n\n" ANSI_COLOR_GRAY); system("pause");
       goto menu2;
     }
 
@@ -444,7 +448,7 @@ int excluirCadastro(Pessoa *pessoa, int n_pessoa, int *n_pessoa_fim){
     valID = verificarID(pessoa, id, n_pessoa);
 
     if(valID == 1){
-      printf("\n        ID não cadastrado! Tente novamente...\n\n"); system("        pause");
+      printf(ANSI_COLOR_RED "\n        ID não cadastrado! Tente novamente...\n\n" ANSI_COLOR_GRAY); system("        pause");
     }
 
     valID = verificarID(pessoa, id, n_pessoa);
@@ -476,7 +480,7 @@ int excluirCadastro(Pessoa *pessoa, int n_pessoa, int *n_pessoa_fim){
 
   if(toupper(caracterR) == 'N'){
     system("cls"); printExcluir();
-    printf("\n        Excluir cadastro ID número [%d] cancelado\n\n", id); system("pause");
+    printf(ANSI_COLOR_RED "\n        Excluir cadastro ID número [%d] cancelado\n\n"ANSI_COLOR_GRAY, id); system("pause");
     goto exit1;
   } else {
 
@@ -494,8 +498,8 @@ int excluirCadastro(Pessoa *pessoa, int n_pessoa, int *n_pessoa_fim){
     *n_pessoa_fim = n_pessoa;
 
     system("cls"); printExcluir();
-    printf("\n        Cadastro ID número [%d] excluído com sucesso!\n\n", id); system("pause");
-
+    printf(ANSI_COLOR_GREEN "\n        Cadastro ID número [%d] excluído com sucesso!\n\n" ANSI_COLOR_GRAY , id); system("pause");
+ 
     return pessoa;
     
   }
@@ -521,7 +525,7 @@ int atualizarCadastro(Pessoa *pessoa, int n_pessoa){
     scanf("%d", &menu);
 
     if(menu < 0 || menu > 1){
-      printf("\n        Opção inválida!\n\n"); system("pause");
+      printf(ANSI_COLOR_RED "\n        Opção inválida!\n\n" ANSI_COLOR_GRAY); system("pause");
       goto menu3;
     }
 
@@ -550,7 +554,7 @@ int atualizarCadastro(Pessoa *pessoa, int n_pessoa){
     valID = verificarID(pessoa, id, n_pessoa);
 
     if(valID == 1){
-      printf("\n        ID não cadastrado! Tente novamente...\n\n"); system("pause");
+      printf(ANSI_COLOR_RED "\n        ID não cadastrado! Tente novamente...\n\n" ANSI_COLOR_GRAY); system("pause");
     }
 
     valID = verificarID(pessoa, id, n_pessoa);
@@ -635,7 +639,7 @@ void informacaoCadastro(Pessoa *pessoa, int n_pessoa){
     scanf("%d", &menu);
 
     if(menu < 0 || menu > 3){
-      printf("\n        Opção inválida!\n\n"); system("pause");
+      printf(ANSI_COLOR_RED  "\n        Opção inválida!\n\n" ANSI_COLOR_GRAY); system("pause");
       goto menu2;
     }
 
@@ -687,7 +691,7 @@ void informacaoCadastro(Pessoa *pessoa, int n_pessoa){
     valID = verificarID(pessoa, id, n_pessoa);
 
     if(valID == 1){
-      printf("\n\n        ID não cadastrado! Tente novamente...\n"); system("pause");
+      printf(ANSI_COLOR_RED  "\n\n        ID não cadastrado! Tente novamente...\n" ANSI_COLOR_GRAY); system("pause");
     }
 
     valID = verificarID(pessoa, id, n_pessoa);
@@ -816,7 +820,7 @@ void main(){
   pessoa = (Pessoa*) malloc(0 * sizeof(Pessoa));
 
   if(pessoa == NULL){
-    printf("Erro de alocação de memória!\n"); return;
+    printf(ANSI_COLOR_RED "Erro de alocação de memória!\n" ANSI_COLOR_GRAY); return;
   }
 
   int menu = 1, n_pessoa = 0;
@@ -825,7 +829,7 @@ void main(){
   arquivo = fopen("funcionarios.txt", "a+");
 
   if(arquivo == NULL){
-    printf("Erro ao abrir aquivo!\n"); return;
+    printf(ANSI_COLOR_RED "Erro ao abrir aquivo!\n" ANSI_COLOR_GRAY); return;
   }
 
   if(fgets(&caracter, 0, arquivo) == NULL){
@@ -863,7 +867,7 @@ void main(){
     }
 
     if(fclose(arquivo) != 0){
-      printf("Erro ao fechar o arquivo!\n");
+      printf(ANSI_COLOR_RED "Erro ao fechar o arquivo!\n" ANSI_COLOR_GRAY);
       return;
     }
 
@@ -882,7 +886,7 @@ void main(){
     scanf("%d", &menu);
 
     if(menu < 0 || menu > 4){
-      printf("\n        Opção inválida!\n"); system("pause");
+      printf(ANSI_COLOR_RED "\n        Opção inválida!\n" ANSI_COLOR_GRAY); system("pause" );
       goto menu;
     }
 
