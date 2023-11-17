@@ -730,7 +730,8 @@ void informacaoCadastro(Pessoa *pessoa, int n_pessoa){
   }
 
   infoCPF:
-  printf("        Digite o CPF: ");
+  system("cls"); printInformacao();
+  printf("\n        Digite o CPF: ");
   scanf(" %[^\n]", &CPF);
   
   valCPF = verificarCPF(&CPF);
@@ -746,23 +747,32 @@ void informacaoCadastro(Pessoa *pessoa, int n_pessoa){
 
   for(i = 0; i < n_pessoa; i++){
     if(strcmp(CPF, pessoa[i].CPF) == 0){
+      valCPF = 1;
       break;
+    } else {
+      valCPF = 0;
     }
   }
 
-  system("cls"); borda(100); vazio(); seletoresInicio(40);
-  printf("INFORMAÇÃO                                              ██\n");
-  vazio(); borda(100);
+  if(valCPF == 1){
+    system("cls"); borda(100); vazio(); seletoresInicio(40);
+    printf("INFORMAÇÃO                                              ██\n");
+    vazio(); borda(100);
 
-  printf("\n        Informações do cadastro:\n\n");
-  printf("        ID: %d\n", pessoa[i].id_pessoa);
-  printf("        Nome: %s\n", pessoa[i].nome);
-  printf("        CPF: %s\n", pessoa[i].CPF);
-  printf("        E-mail: %s\n", pessoa[i].email);
-  printf("        Telefone: %s\n", pessoa[i].telefone);
-  printf("        Função: %s\n", pessoa[i].funcao);
-  printf("        Setor: %s\n\n", pessoa[i].setor);
-  system("        pause");
+    printf("\n        Informações do cadastro:\n\n");
+    printf("        ID: %d\n", pessoa[i].id_pessoa);
+    printf("        Nome: %s\n", pessoa[i].nome);
+    printf("        CPF: %s\n", pessoa[i].CPF);
+    printf("        E-mail: %s\n", pessoa[i].email);
+    printf("        Telefone: %s\n", pessoa[i].telefone);
+    printf("        Função: %s\n", pessoa[i].funcao);
+    printf("        Setor: %s\n\n", pessoa[i].setor);
+    system("        pause");
+  } else {
+    printf(ANSI_COLOR_RED  "\n        CPF não cadastrado! Tente novamente...\n" ANSI_COLOR_GRAY); system("pause");
+    goto infoCPF;
+  }
+
 
   goto exit3;
 
